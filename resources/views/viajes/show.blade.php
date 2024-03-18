@@ -13,20 +13,20 @@
                 <div class="col-md-6">
                     <!-- Información del viaje -->
                     <div class="pt-2">
-                        <h2 class="pb-3">Viaje {{ $viaje->nombre }}</h2>
+                        <h2 class="pb-2">Viaje {{ $viaje->nombre }}</h2>
                         <p><strong>Salida:</strong> {{ $viaje->fecha_salida }}</p>
                         <p><strong>Regreso:</strong> {{ $viaje->fecha_regreso }}</p>
                         <p><strong>Destino:</strong> {{ $viaje->destino }}</p>
                         <p><strong>Plazas Máximas:</strong> {{ $viaje->num_pax }}</p>
                         <p><strong>Estado:</strong> <span class="badge {{ $viaje->estadoColorClass() }}">{{ $viaje->estado }}</span></p>
                         <p class="price"><sup>€</sup><span class="number">{{ $viaje->precio_persona }}</span><sub>/persona</sub></p>
-                        <a href="{{ url('viajes/' . $viaje->id . '/show') }}" class="btn btn-primary px-5 py-2">Crear una reserva</a>
 
                     </div>
                 </div>
             </div>
         </div>
      <div class="container py-4">
+        <a href="{{ url('viajes/' . $viaje->id . '/show') }}" class="btn btn-primary px-5 py-2 mb-5">Crear una reserva</a>
             <h2>Reservas</h2>
    {{--
             <a href="{{ url('reservas/create') }}" class="btn btn-primary btn-sm">Nueva Reserva</a>

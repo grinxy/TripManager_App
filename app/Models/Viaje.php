@@ -11,8 +11,7 @@ class Viaje extends Model
     {
         return $this->belongsTo(Reserva::class, 'id_viaje', 'id');
     }
-<<<<<<< Updated upstream
-=======
+
 
     public function estadoColorClass()
 {
@@ -25,5 +24,5 @@ class Viaje extends Model
             return 'badge badge-pill bg-danger text-white';
     }
 }
->>>>>>> Stashed changes
+
 }
