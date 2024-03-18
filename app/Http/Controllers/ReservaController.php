@@ -35,7 +35,8 @@ class ReservaController extends Controller
      */
     public function create()
     {
-        //
+        $viajes = Viaje::all();
+        return view('reservas.create', ['viajes' => $viajes]);
     }
 
     /**
