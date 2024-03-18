@@ -1,5 +1,6 @@
 <?php
-
+use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\ViajeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::resource('/viajes', ViajeController::class);
