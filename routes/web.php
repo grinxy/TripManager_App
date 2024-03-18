@@ -1,7 +1,9 @@
 <?php
+
 use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\ViajeController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +24,5 @@ Route::get('/', function () {
 Route::resource('/viajes', ViajeController::class);
 Route::get('viajes/{id}/show', [ViajeController::class, 'show'])->name('viajes.show');  //metodo adicional al CRUD
 Route::put('/viajes/{id}', [ViajeController::class, 'update'])->name('viajes.update');  //para metodos PUT - editar entrada existente, no funciona resource
+
+Route::resource('/reservas', ReservaController::class);
