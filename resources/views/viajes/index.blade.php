@@ -16,13 +16,15 @@
                             @csrf
                             <div class="input-group">
                                 <!-- Filtrar por destino-->
-                                <select name="destino_buscado" id="destino_buscado" class="form-select" style="width: 400px;">
+                                <select name="destino_buscado" id="destino_buscado" class="form-select"
+                                    style="width: 400px;">
                                     <option value="">Filtrar por destino (todos)</option>
                                     @foreach ($viajes_select as $viaje)
                                         <option value="{{ $viaje->destino }}">{{ $viaje->destino }}</option>
                                     @endforeach
                                 </select>
-                                <button type="submit" class="btn btn-primary" data-mdb-ripple-init><i class="fas fa-search"></i></button>
+                                <button type="submit" class="btn btn-primary" data-mdb-ripple-init><i
+                                        class="fas fa-search"></i></button>
                             </div>
                         </form>
                     </div>
@@ -33,11 +35,11 @@
 
             </div>
             <div class="row">
-                @foreach ($viajes as $viaje)
-
+                @if ($viajes !== null)
+                    @foreach ($viajes as $viaje)
                         <div class="col-md-4 ftco-animate fadeInUp ftco-animated destino">
                             <div class="card block-7 bg-light mb-5">
-                           <!-- <div class="block-7">-->
+                                <!-- <div class="block-7">-->
                                 <div style="height: 180px; overflow: hidden;">
                                     <img src="{{ $viaje->imagen }}" alt="{{ $viaje->nombre }}" style="width: 100%;">
                                 </div>
@@ -57,9 +59,14 @@
                                 </div>
                             </div>
                         </div>
-
-                @endforeach
+                    @endforeach
             </div>
         </div>
+    @else
+        <div class= "row justify-content-center py-5 mb-3">
+            <p class="col-md-7 text-center text-danger">No hay viajes para mostrar</p>
+        </div>
+        @endif
+
     </section>
 @endsection

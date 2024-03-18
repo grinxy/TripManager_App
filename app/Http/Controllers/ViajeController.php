@@ -13,7 +13,6 @@ class ViajeController extends Controller
     public function index(Request $request)
     {
     $destino = $request->destino_buscado;
-
     if ($destino == null) {
         $viajes = Viaje::all()->sortBy(['fecha_salida', 'desc']);
 
