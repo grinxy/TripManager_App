@@ -11,4 +11,19 @@ class Viaje extends Model
     {
         return $this->belongsTo(Reserva::class, 'id_viaje', 'id');
     }
+<<<<<<< Updated upstream
+=======
+
+    public function estadoColorClass()
+{
+    switch ($this->estado) {
+        case 'no confirmado':
+            return 'badge badge-pill bg-warning text-white';
+        case 'confirmado':
+            return 'badge badge-pill bg-success text-white';
+        case 'completo':
+            return 'badge badge-pill bg-danger text-white';
+    }
+}
+>>>>>>> Stashed changes
 }

@@ -20,3 +20,4 @@ Route::get('/', function () {
 
 
 Route::resource('/viajes', ViajeController::class);
+Route::get('viajes/{id}/show', [ViajeController::class, 'show'])->name('viajes.show');
