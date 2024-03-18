@@ -23,6 +23,7 @@
                     <a href="{{ url('reservas/create') }}" class="btn btn-success mt-1 px-4">Crear Nueva Reserva</a>
                 </div>
             </div>
+
             @if ($reservas->isEmpty())
                 <div class="alert alert-info mt-4" role="alert">
                     Cliente no encontrado
@@ -57,10 +58,30 @@
                                     <td><a href="{{ url('reservas/' . $reserva->id . '/edit') }}"
                                             class="btn btn-secondary btn-sm">Editar</a></td>
                                     <td>
-                                        <form action="{{ url('reservas/' . $reserva->id) }}" method="post">
+                                        <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar esta reserva?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+                                        <form id="deleteForm_{{ $reserva->id }}" action="{{ url('reservas/' . $reserva->id) }}"
+                                            method="post">
                                             @method('DELETE')
                                             @csrf
-                                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                            <button type="button" onclick="confirmDelete({{ $reserva->id }})"
+                                                class="btn btn-danger btn-sm">Eliminar</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -73,5 +94,34 @@
     </main>
 
 
+    <script>
+        function confirmDelete(id) {
+            // Mostrar una alerta personalizada de SweetAlert2
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción no se puede revertir',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0000ff',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                // Si el usuario confirma, enviar el formulario de eliminación
+                if (result.isConfirmed) {
+                    var form = document.getElementById('deleteForm_' + id);
+                    form.submit();
+                    // Mostrar una alerta con SweetAlert2 después de enviar el formulario
+                    setTimeout(function() {
+                    Swal.fire(
+                        'Eliminado!',
+                        'La reserva ha sido eliminada.',
+                        'success'
+                    );
+                }, 500);
+                }
+            });
+        }
+    </script>
 
 @endsection

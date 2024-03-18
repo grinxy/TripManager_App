@@ -121,8 +121,11 @@ class ReservaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Reserva $reserva)
+    public function destroy($id)
     {
-        //
+       $reserva = Reserva::find($id);
+        $reserva->delete();
+
+        return redirect('reservas');
     }
 }
