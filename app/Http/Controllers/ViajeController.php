@@ -30,7 +30,7 @@ class ViajeController extends Controller
      */
     public function create()
     {
-        //
+        return view('viajes.create');
     }
 
     /**
@@ -38,7 +38,30 @@ class ViajeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+        'nombre' => 'required|string',
+		'fecha_salida' => 'required',
+		'fecha_regreso' => 'required',
+		'destino' => 'required|string',
+		'precio_persona' => 'required',
+		'num_pax' => 'required',
+		'estado' => 'required',
+        'imagen' => 'required',
+    ]);
+
+        $viaje = new Viaje();
+        $viaje->nombre = $request->input('nombre');
+        $viaje->fecha_salida = $request->input('fecha_salida');
+        $viaje->fecha_regreso = $request->input('fecha_regreso');
+        $viaje->destino = $request->input('destino');
+        $viaje->precio_persona = $request->input('precio_persona');
+        $viaje->num_pax = $request->input('num_pax');
+        $viaje->estado = $request->input('estado');
+        $viaje->imagen = $request->input('imagen');
+
+        $viaje->save();
+        return view('viajes.message', ['msg'=>"Viaje creado correctamente"]);
+
     }
 
     /**
