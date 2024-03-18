@@ -10,12 +10,20 @@ class ViajeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+    $destino = $request->destino_buscado;
+
+    if ($destino == null) {
         $viajes = Viaje::all()->sortBy(['fecha_salida', 'desc']);
-        return view('viajes.index', ['viajes' => $viajes]);
+
+    } else {
+        $viajes = Viaje::where('destino', 'LIKE', '%' . $destino . '%')->get()->sortBy(['fecha_salida', 'desc']);
 
     }
+
+    return view('viajes.index', ['viajes' => $viajes, 'viajes_select' => Viaje::all()]);
+}
 
     /**
      * Show the form for creating a new resource.
