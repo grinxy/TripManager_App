@@ -117,8 +117,11 @@ class ViajeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Viaje $viaje)
+    public function destroy($id)
     {
-        //
+        $viaje = Viaje::find($id);
+        $viaje->delete();
+
+        return view('viajes.message', ['msg'=>"Viaje eliminado correctamente"]);
     }
 }
