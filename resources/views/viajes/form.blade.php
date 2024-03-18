@@ -11,20 +11,22 @@
 @endif
 <div class="container">
     <div class="col-12">
-        <form action="{{ url('viajes') }}" method="post">
+        <form action="{{ isset($viaje) ? url('viajes/' . $viaje->id) : url('viajes') }}" method="post">
             @csrf
+            @if(isset($viaje))
+                @method('PUT')
+            @endif
             <div class="mb-3 row">
                 <label for="nombre" class="col-sm-2 col-form-label">Nombre del Viaje</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="nombre" id="nombre" value="{{ old('nombre') }}"
-                        required>
+                    <input type="text" class="form-control" name="nombre" id="nombre" value="{{ isset($viaje) ? $viaje->nombre : old('nombre') }}" required>
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="fecha_salida" class="col-sm-2 col-form-label">Fecha de Salida</label>
                 <div class="col-sm-5">
                     <input type="date" class="form-control" placeholder=" " id="fecha_salida" name="fecha_salida"
-                        min="<?php echo date('Y-m-d'); ?>" value="{{ old('fecha_salida') }}" required value =" "
+                        min="<?php echo date('Y-m-d'); ?>" value="{{isset($viaje) ? $viaje->fecha_salida : old('fecha_salida') }}" required value =" "
                         onchange="setMinDate()">
                 </div>
             </div>
@@ -32,14 +34,14 @@
                 <label for="fecha_regreso" class="col-sm-2 col-form-label">Fecha de Regreso</label>
                 <div class="col-sm-5">
                     <input type="date" class="form-control" placeholder=" " id="fecha_regreso" name="fecha_regreso"
-                        min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" value="{{ old('fecha_regreso') }}" required value =" ">
+                        min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" value="{{ isset($viaje) ? $viaje->fecha_regreso : old('fecha_regreso') }}" required value =" ">
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="num_pax" class="col-sm-2 col-form-label">Destino</label>
                 <div class="col-sm-5">
                     <input type="text" class="form-control" name="destino" id="destino"
-                        value="{{ old('destino') }}" required>
+                        value="{{isset($viaje) ? $viaje->destino : old('destino') }}" required>
 
                 </div>
             </div>
@@ -47,7 +49,7 @@
                 <label for="precio_persona" class="col-sm-2 col-form-label">Precio/persona</label>
                 <div class="col-sm-5">
                     <input type="number" class="form-control" name="precio_persona" id="precio_persona" placeholder="€"
-                        value="{{ old('precio_persona') }}" required>
+                        value="{{isset($viaje) ? $viaje->precio_persona : old('precio_persona') }}" required>
 
                 </div>
             </div>
@@ -55,7 +57,7 @@
                 <label for="num_pax" class="col-sm-2 col-form-label">Numero Viajeros</label>
                 <div class="col-sm-5">
                     <input type="number" class="form-control" name="num_pax" id="num_pax"
-                        value="{{ old('num_pax') }}" required>
+                        value="{{isset($viaje) ? $viaje->num_pax : old('num_pax') }}" required>
 
                 </div>
             </div>
@@ -64,9 +66,9 @@
                 <div class="col-sm-5">
                     <select name="estado" id="estado" class="form-select" required>
                         <option value="">Seleccionar estado</option>
-                        <option value="no confirmado" {{ old('estado') == 'no confirmado' ? 'selected' : '' }}>No confirmado</option>
-                        <option value="confirmado"{{ old('estado') == 'confirmado' ? 'selected' : '' }}> Confirmado</option>
-                        <option value="completo"{{ old('estado') == 'completo' ? 'selected' : '' }}> Completo</option>
+                        <<option value="no confirmado" {{ (isset($viaje) && $viaje->estado == 'no confirmado') ? 'selected' : (old('estado') == 'no confirmado' ? 'selected' : '') }}>No confirmado</option>
+                        <option value="confirmado" {{ (isset($viaje) && $viaje->estado == 'confirmado') ? 'selected' : (old('estado') == 'confirmado' ? 'selected' : '' ) }}> Confirmado</option>
+                        <option value="completo" {{ (isset($viaje) && $viaje->estado == 'completo') ? 'selected' : (old('estado') == 'completo' ? 'selected' : '' ) }}> Completo</option>
                     </select>
                 </div>
             </div>
@@ -74,7 +76,7 @@
                 <label for="imagen" class="col-sm-2 col-form-label">Imagen</label>
                 <div class="col-sm-5">
                     <input type="text" class="form-control" name="imagen" id="imagen"
-                        placeholder="URL de la imagen" value="{{ old('imagen') }}" required>
+                        placeholder="URL de la imagen" value="{{isset($viaje) ? $viaje->imagen : old('imagen') }}" required>
 
                 </div>
             </div>

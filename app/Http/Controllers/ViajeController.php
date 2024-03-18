@@ -81,7 +81,6 @@ class ViajeController extends Controller
     {
         {
             $viaje = Viaje::find($id);
-            var_dump($viaje);
             return view("viajes.edit", ["viaje"=> $viaje]);
         }
     }
@@ -89,9 +88,31 @@ class ViajeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Viaje $viaje)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string',
+            'fecha_salida' => 'required',
+            'fecha_regreso' => 'required',
+            'destino' => 'required|string',
+            'precio_persona' => 'required',
+            'num_pax' => 'required',
+            'estado' => 'required',
+            'imagen' => 'required',
+        ]);
+
+            $viaje = Viaje::find($id);
+            $viaje->nombre = $request->input('nombre');
+            $viaje->fecha_salida = $request->input('fecha_salida');
+            $viaje->fecha_regreso = $request->input('fecha_regreso');
+            $viaje->destino = $request->input('destino');
+            $viaje->precio_persona = $request->input('precio_persona');
+            $viaje->num_pax = $request->input('num_pax');
+            $viaje->estado = $request->input('estado');
+            $viaje->imagen = $request->input('imagen');
+
+            $viaje->save();
+            return view('viajes.message', ['msg'=>"Viaje modificado correctamente"]);
     }
 
     /**
