@@ -67,17 +67,23 @@ class ViajeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Viaje $viaje)
+    public function show($id)
     {
-        //
+        $viaje = Viaje::find($id);
+
+            return view("viajes.show", ["viaje"=> $viaje]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Viaje $viaje)
+    public function edit($id)
     {
-        //
+        {
+            $viaje = Viaje::find($id);
+            var_dump($viaje);
+            return view("viajes.edit", ["viaje"=> $viaje]);
+        }
     }
 
     /**
