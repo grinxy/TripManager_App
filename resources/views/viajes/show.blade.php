@@ -26,7 +26,11 @@
             </div>
         </div>
      <div class="container py-4">
-        <a href="{{ url('viajes/' . $viaje->id . '/show') }}" class="btn btn-primary px-5 mx-2 py-2 mb-5">Crear una reserva</a>
+        <form id="reservaDesdeViaje" action="{{ route('reservas.create') }}" method="GET" class="d-inline">
+            @csrf
+            <input type="hidden" name="id_viaje" value="{{ $viaje->id }}">
+            <button type="submit" class="btn btn-primary px-5 mx-2 py-2 mb-5">Crear una reserva</button>
+        </form>
         <a href="{{ url('viajes/' . $viaje->id . '/edit') }}" class="btn btn-secondary px-5 mx-2 py-2 mb-5">Editar</a>
        <form action="{{ url('viajes/' . $viaje->id) }}" method="post"class="d-inline mx-2">
             @method('DELETE')

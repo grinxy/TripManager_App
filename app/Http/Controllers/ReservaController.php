@@ -33,10 +33,11 @@ class ReservaController extends Controller
 
     /* Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        $viajes = Viaje::all();
-        return view('reservas.create', ['viajes' => $viajes]);
+        $id_viaje = $request->input('id_viaje');
+         $viajes = Viaje::all();
+        return view('reservas.create', ['viajes' => $viajes, 'id_viaje_concreto' => $id_viaje]);
     }
 
     /**
@@ -44,7 +45,29 @@ class ReservaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre_cliente' => 'required|string',
+            'num_pax' => 'required',
+            'estado' => 'required',
+            'id_viaje' => 'required',
+    ]);
+
+    //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
+    $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
+    $precioPersona = $viaje->precio_persona;
+    $precioTotal = $precioPersona * $request->input('num_pax');
+
+
+    $reserva = new Reserva();
+    $reserva->nombre_cliente = $request->input('nombre_cliente');
+    $reserva->num_pax = $request->input('num_pax');
+    $reserva->precio_total = $precioTotal;
+    $reserva->fecha_reserva = Carbon::today();
+    $reserva->estado = $request->input('estado');
+    $reserva->id_viaje = $request->input('id_viaje');
+
+    $reserva->save();
+    return view('reservas.message', ['msg'=>"Reserva creada correctamente"]);
     }
 
     /**
@@ -58,17 +81,41 @@ class ReservaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Reserva $reserva)
+    public function edit($id)
     {
-        //
+        $reserva = Reserva::find($id);
+        return view("reservas.edit", ["reserva"=> $reserva, "viajes" => Viaje::all()]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Reserva $reserva)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nombre_cliente' => 'required|string',
+            'num_pax' => 'required',
+            'estado' => 'required',
+            'id_viaje' => 'required',
+    ]);
+
+    //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
+    $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
+    $precioPersona = $viaje->precio_persona;
+    $precioTotal = $precioPersona * $request->input('num_pax');
+
+
+
+    $reserva = Reserva::find($id);
+    $reserva->nombre_cliente = $request->input('nombre_cliente');
+    $reserva->num_pax = $request->input('num_pax');
+    $reserva->precio_total = $precioTotal;
+    $reserva->estado = $request->input('estado');
+    $reserva->id_viaje = $request->input('id_viaje');
+
+
+    $reserva->save();
+    return view('reservas.message', ['msg'=>"Reserva modificada correctamente"]);
     }
 
     /**

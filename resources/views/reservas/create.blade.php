@@ -23,8 +23,10 @@
                         <select name="id_viaje" id="id_viaje" class="form-select" required>
                             <option value=""> Seleccionar Viaje</option>
                             @foreach ($viajes as $viaje)
-                                <option value="{{ $viaje->id }}" precio_persona="{{ $viaje->precio_persona }}">
-                                    {{ $viaje->nombre }}</option>
+                            <option value="{{ $viaje->id }}" precio_persona="{{ $viaje->precio_persona }}"
+                                {{ isset($id_viaje_concreto) && $id_viaje_concreto == $viaje->id ? 'selected' : '' }}>
+                                {{ $viaje->nombre }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -83,7 +85,7 @@
 
             function calcularPrecioTotal() {
                 var numPax = isNaN(parseInt(numPaxInput.value)) ? 0 : parseInt(numPaxInput
-                .value); //0 inicial antes de que calcule
+                    .value); //0 inicial antes de que calcule
                 var precioPersona = parseFloat(viajeSelect.options[viajeSelect.selectedIndex].getAttribute(
                     'precio_persona'));
 
