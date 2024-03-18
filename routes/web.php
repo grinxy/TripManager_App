@@ -26,3 +26,4 @@ Route::get('viajes/{id}/show', [ViajeController::class, 'show'])->name('viajes.s
 Route::put('/viajes/{id}', [ViajeController::class, 'update'])->name('viajes.update');  //para metodos PUT - editar entrada existente, no funciona resource
 
 Route::resource('/reservas', ReservaController::class);
+Route::put('/reservas/{id}', [ReservaController::class, 'update'])->name('reservas.update');  //para metodos PUT - editar entrada existente, no funciona resource
