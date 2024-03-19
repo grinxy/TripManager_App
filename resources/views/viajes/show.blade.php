@@ -92,12 +92,13 @@
                                 <td><a href="{{ url('reservas/' . $reserva->id . '/edit') }}"
                                         class="btn btn-secondary btn-sm">Editar</a></td>
                                 <td>
-                                    <form action="{{ url('reservas/' . $reserva->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" onclick="confirmDeleteReserva({{ $reserva->id }})"
-                                            class="btn btn-danger btn-sm">Eliminar</button>
-                                    </form>
+                                    <form id="deleteForm_{{ $reserva->id }}"
+                                            action="{{ url('reservas/' . $reserva->id) }}" method="post">
+                                            @method('DELETE')
+                                            @csrf
+                                            <button type="button" onclick="confirmDelete({{ $reserva->id }})"
+                                                class="btn btn-danger btn-sm">Eliminar</button>
+                                        </form>
                                 </td>
                             </tr>
                         @endforeach

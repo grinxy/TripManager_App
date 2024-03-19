@@ -37,11 +37,20 @@ class ReservaController extends Controller
     {
         $id_viaje = $request->input('id_viaje');
 
+        $viaje = null;
+        $plazasMaximas = null;
+
+        if($id_viaje)
+        {
         $viaje = Viaje::find(($id_viaje));
+        $plazasMaximas = $viaje->plazas_disponibles ;
+        }
        //pasar a select solo viajes no completos
         $viajes_disponibles = Viaje::where('estado', '!=', 'completo')->get();
 
-        return view('reservas.create', ['viajes' => $viajes_disponibles, 'viaje' => $viaje]);
+
+
+        return view('reservas.create', ['viajes' => $viajes_disponibles, 'viaje' => $viaje,"plazasMaximas" => $plazasMaximas ]);
     }
 
     /**
@@ -95,8 +104,10 @@ class ReservaController extends Controller
         $reserva = Reserva::find($id);
         $viajeId = $reserva->id_viaje;
         $viaje = Viaje::find($viajeId);
+        $plazasMaximas =  $reserva->num_pax + $viaje->plazas_disponibles ;
+        echo $plazasMaximas;
 
-        return view("reservas.edit", ["reserva" => $reserva, "viaje" => $viaje]);
+        return view("reservas.edit", ["reserva" => $reserva, "viaje" => $viaje, "plazasMaximas" => $plazasMaximas]);
     }
 
     /**
@@ -145,6 +156,6 @@ class ReservaController extends Controller
 
         $viaje->updateEstado($reserva->id_viaje);
         $viaje->updatePlazasDisponibles($reserva->id_viaje);
-        return redirect('reservas');
+        return redirect()->back();
     }
 }

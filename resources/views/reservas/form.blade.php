@@ -41,103 +41,89 @@
                     @endisset
                 </select>
             </div>
+
+
+        </div>
+
+        <!-- calcular plazas disponibles segun desde donde accede el usuario-->
+        <div class="mb-3 row">
+            <label for="num_pax" class="col-sm-2 col-form-label">Número viajeros</label>
+            <div class="col-sm-5">
+
+                @isset($viaje)
+                    <input type="number" class="form-control" name="num_pax" id="num_pax"
+                        value="{{ isset($reserva) ? $reserva->num_pax : old('num_pax') }}" required min="1"
+                        max="{{ $plazasMaximas }}">
+                    <p class="text-muted small"> Plazas disponibles: {{ $viaje->plazas_disponibles }}</p>
+                @else
+                    <input type="number" class="form-control" name="num_pax" id="num_pax"
+                        value="{{ isset($reserva) ? $reserva->num_pax : old('num_pax') }}" required min= "1"
+                        max='12'>
+                    <p class="text-muted small" id="plazas_disponibles">Plazas disponibles: </p>
+                @endisset
+
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="nombre_cliente" class="col-sm-2 col-form-label">Nombre Cliente</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" name="nombre_cliente" id="nombre_cliente"
+                    value="{{ isset($reserva) ? $reserva->nombre_cliente : old('nombre_cliente') }}" required>
+
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <label for="estado" class="col-sm-2 col-form-label">Estado reserva</label>
+            <div class="col-sm-5">
+                <select name="estado" id="estado" class="form-select" required>
+                    <option value="">Seleccionar estado</option>
+                    <option value="reservada"
+                        {{ isset($reserva) && $reserva->estado == 'Reserva hecha' ? 'selected' : '' }}>
+                        Reserva hecha
+                    </option>
+                    <option value="pagada" {{ isset($reserva) && $reserva->estado == 'Pagada' ? 'selected' : '' }}>Pago
+                        confirmado</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <label for="precio_total" class="col-sm-2 col-form-label">Precio total reserva</label>
+            <div class="col-sm-5">
+                <p class="py-2" id="precio_total"></p> <!-- Resultado del cálculo  JS -->
+            </div>
+        </div>
+        <a href={{ url()->previous() }} class="my-4 btn btn-secondary"> Volver</a>
+        <button type="submit" class="my-4 btn btn-success"> Guardar</button>
     </form>
-
 </div>
 
-<!-- calcular plazas disponibles segun desde donde accede el usuario-->
-<div class="mb-3 row">
-    <label for="num_pax" class="col-sm-2 col-form-label">Número viajeros</label>
-    <div class="col-sm-5">
-
-        @isset($viaje)
-            <input type="number" class="form-control" name="num_pax" id="num_pax"
-                value="{{ isset($reserva) ? $reserva->num_pax : old('num_pax') }}" required min= "1"
-                max="{{ $viaje->plazas_disponibles }}">
-            <p class="text-muted small"> Plazas disponibles: {{ $viaje->plazas_disponibles }}</p>
-        @else
-            <input type="number" class="form-control" name="num_pax" id="num_pax"
-                value="{{ isset($reserva) ? $reserva->num_pax : old('num_pax') }}" required min= "1" max='12'>
-            <p class="text-muted small" id="plazas_disponibles">Plazas disponibles: </p>
-        @endisset
-
-    </div>
-</div>
-<div class="mb-3 row">
-    <label for="nombre_cliente" class="col-sm-2 col-form-label">Nombre Cliente</label>
-    <div class="col-sm-5">
-        <input type="text" class="form-control" name="nombre_cliente" id="nombre_cliente"
-            value="{{ isset($reserva) ? $reserva->nombre_cliente : old('nombre_cliente') }}" required>
-
-    </div>
-</div>
-
-<div class="mb-3 row">
-    <label for="estado" class="col-sm-2 col-form-label">Estado reserva</label>
-    <div class="col-sm-5">
-        <select name="estado" id="estado" class="form-select" required>
-            <option value="">Seleccionar estado</option>
-            <option value="reservada" {{ isset($reserva) && $reserva->estado == 'Reserva hecha' ? 'selected' : '' }}>
-                Reserva hecha
-            </option>
-            <option value="pagada" {{ isset($reserva) && $reserva->estado == 'Pagada' ? 'selected' : '' }}>Pago
-                confirmado</option>
-        </select>
-    </div>
-</div>
-
-<div class="mb-3 row">
-    <label for="precio_total" class="col-sm-2 col-form-label">Precio total reserva</label>
-    <div class="col-sm-5">
-        <p class="py-2" id="precio_total"></p> <!-- Resultado del cálculo de abajo JS -->
-    </div>
-</div>
-<a href="{{ url('reservas') }}" class="my-4 btn btn-secondary"> Volver</a>
-<button type="submit" class="my-4 btn btn-success"> Guardar</button>
-</form>
-</div>
 <script>
     //calcular precio total reserva: num personas * precio viaje seleccionado
     document.addEventListener('DOMContentLoaded', function() {
-        var numPaxInput = document.getElementById('num_pax');
-        var viajeSelect = document.getElementById('id_viaje');
-        var precioTotalInput = document.getElementById('precio_total');
-        var plazasDisponiblesValue = 0;
+                var numPaxInput = document.getElementById('num_pax');
+                var viajeSelect = document.getElementById('id_viaje');
+                var precioTotalInput = document.getElementById('precio_total');
+        //llamar a la funcion de inicio para editar reserva donde ya hay un precio
+                calcularPrecioTotal();
+                function calcularPrecioTotal() {
+                    var numPax = parseFloat(numPaxInput.value);
+                    var precioPersona = parseFloat(viajeSelect.options[viajeSelect.selectedIndex].getAttribute(
+                        'precio_persona'));
 
-        function calcularPrecioTotal() {
-            var numPax = parseFloat(numPaxInput.value);
-            var precioPersona = parseFloat(viajeSelect.options[viajeSelect.selectedIndex].getAttribute(
-                'precio_persona'));
-
-            if (!isNaN(numPax)) {
-                var precioTotal = numPax * precioPersona;
-                precioTotalInput.textContent = precioTotal.toFixed(2) + '€';
-            } else {
-                precioTotalInput.textContent = '0.00€';
-            }
-        }
-
-        function calcularPlazasDisponibles() {
-            var selectedOption = viajeSelect.options[viajeSelect.selectedIndex];
-            plazasDisponiblesValue = parseFloat(selectedOption.getAttribute('data-plazas-disponibles'));
-            numPaxInput.setAttribute('max', plazasDisponiblesValue);
-
-            if (isNaN(plazasDisponiblesValue)) {
-                document.getElementById('plazas_disponibles').textContent = 'Plazas disponibles: ';
-            } else {
-                document.getElementById('plazas_disponibles').textContent = 'Plazas disponibles: ' +
-                plazasDisponiblesValue;
-            }
-
-
-        }
-
-        //evento para cuando el select cambie y el viaje y viajeros esten definidos
+                    if (!isNaN(numPax)) {
+                        var precioTotal = numPax * precioPersona;
+                        precioTotalInput.textContent = precioTotal.toFixed(2) + '€';
+                    } else {
+                        precioTotalInput.textContent = '0.00€';
+                    }
+                }
+                // Agregar event listeners
         numPaxInput.addEventListener('change', calcularPrecioTotal);
         viajeSelect.addEventListener('change', calcularPrecioTotal);
-        calcularPrecioTotal();
-        viajeSelect.addEventListener('change', calcularPlazasDisponibles);
-        calcularPlazasDisponibles();
 
-    });
+        // Llamar a la función calcularPrecioTotal() para inicializar el valor del precio total
+        calcularPrecioTotal();
+    })
 </script>
