@@ -116,7 +116,7 @@ class ReservaController extends Controller
         $viajeId = $reserva->id_viaje;
         $viaje = Viaje::find($viajeId);
         $plazasMaximas =  $reserva->num_pax + $viaje->plazas_disponibles;
-        echo $plazasMaximas;
+
 
           // Guardar la URL desde la que se accede al formulario para poder volver tras exito
         Session::put('previous_url', URL::previous());
