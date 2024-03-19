@@ -26,8 +26,9 @@
 
             @if ($reservas->isEmpty())
                 <div class="alert alert-info mt-4" role="alert">
-                    Cliente no encontrado
+                    No hay reservas para mostrar
                 </div>
+
             @else
                 <div class="py-5">
                     <table class="table table-hover">

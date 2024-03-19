@@ -69,7 +69,7 @@ class ViajeController extends Controller
     public function show($id)
     {
         $viaje = Viaje::find($id);
-
+        echo $viaje;
             return view("viajes.show", ["viaje"=> $viaje]);
     }
 
