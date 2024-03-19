@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Viaje;
+use App\Models\Reserva;
 use Illuminate\Http\Request;
 
 class ViajeController extends Controller
@@ -12,17 +13,15 @@ class ViajeController extends Controller
      */
     public function index(Request $request)
     {
-    $destino = $request->destino_buscado;
-    if ($destino == null) {
-        $viajes = Viaje::all()->sortBy(['fecha_salida', 'desc']);
+        $destino = $request->destino_buscado;
+        if ($destino == null) {
+            $viajes = Viaje::all()->sortBy(['fecha_salida', 'desc']);
+        } else {
+            $viajes = Viaje::where('destino', 'LIKE', '%' . $destino . '%')->get()->sortBy(['fecha_salida', 'desc']);
+        }
 
-    } else {
-        $viajes = Viaje::where('destino', 'LIKE', '%' . $destino . '%')->get()->sortBy(['fecha_salida', 'desc']);
-
+        return view('viajes.index', ['viajes' => $viajes, 'viajes_select' => Viaje::all()]);
     }
-
-    return view('viajes.index', ['viajes' => $viajes, 'viajes_select' => Viaje::all()]);
-}
 
     /**
      * Show the form for creating a new resource.
@@ -38,15 +37,15 @@ class ViajeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'nombre' => 'required|string',
-		'fecha_salida' => 'required',
-		'fecha_regreso' => 'required',
-		'destino' => 'required|string',
-		'precio_persona' => 'required',
-		'num_pax' => 'required',
-		'estado' => 'required',
-        'imagen' => 'required',
-    ]);
+            'nombre' => 'required|string',
+            'fecha_salida' => 'required',
+            'fecha_regreso' => 'required',
+            'destino' => 'required|string',
+            'precio_persona' => 'required',
+            'num_pax' => 'required',
+            'estado' => 'required',
+            'imagen' => 'required',
+        ]);
 
         $viaje = new Viaje();
         $viaje->nombre = $request->input('nombre');
@@ -59,8 +58,7 @@ class ViajeController extends Controller
         $viaje->imagen = $request->input('imagen');
 
         $viaje->save();
-        return view('viajes.message', ['msg'=>"Viaje creado correctamente"]);
-
+        return view('viajes.message', ['msg' => "Viaje creado correctamente"]);
     }
 
     /**
@@ -69,18 +67,19 @@ class ViajeController extends Controller
     public function show($id)
     {
         $viaje = Viaje::find($id);
-        echo $viaje;
-            return view("viajes.show", ["viaje"=> $viaje]);
+        $reservas = Reserva::where('id_viaje', $id)->get();
+
+
+        return view("viajes.show", ["viaje" => $viaje, "reservas" => $reservas]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-    {
-        {
+    { {
             $viaje = Viaje::find($id);
-            return view("viajes.edit", ["viaje"=> $viaje]);
+            return view("viajes.edit", ["viaje" => $viaje]);
         }
     }
 
@@ -100,18 +99,18 @@ class ViajeController extends Controller
             'imagen' => 'required',
         ]);
 
-            $viaje = Viaje::find($id);
-            $viaje->nombre = $request->input('nombre');
-            $viaje->fecha_salida = $request->input('fecha_salida');
-            $viaje->fecha_regreso = $request->input('fecha_regreso');
-            $viaje->destino = $request->input('destino');
-            $viaje->precio_persona = $request->input('precio_persona');
-            $viaje->num_pax = $request->input('num_pax');
-            $viaje->estado = $request->input('estado');
-            $viaje->imagen = $request->input('imagen');
+        $viaje = Viaje::find($id);
+        $viaje->nombre = $request->input('nombre');
+        $viaje->fecha_salida = $request->input('fecha_salida');
+        $viaje->fecha_regreso = $request->input('fecha_regreso');
+        $viaje->destino = $request->input('destino');
+        $viaje->precio_persona = $request->input('precio_persona');
+        $viaje->num_pax = $request->input('num_pax');
+        $viaje->estado = $request->input('estado');
+        $viaje->imagen = $request->input('imagen');
 
-            $viaje->save();
-            return view('viajes.message', ['msg'=>"Viaje modificado correctamente"]);
+        $viaje->save();
+        return view('viajes.message', ['msg' => "Viaje modificado correctamente"]);
     }
 
     /**
@@ -122,6 +121,6 @@ class ViajeController extends Controller
         $viaje = Viaje::find($id);
         $viaje->delete();
 
-        return view('viajes.message', ['msg'=>"Viaje eliminado correctamente"]);
+        return view('viajes.message', ['msg' => "Viaje eliminado correctamente"]);
     }
 }

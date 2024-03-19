@@ -18,31 +18,40 @@
                         <p><strong>Regreso:</strong> {{ $viaje->fecha_regreso }}</p>
                         <p><strong>Destino:</strong> {{ $viaje->destino }}</p>
                         <p><strong>Plazas Máximas:</strong> {{ $viaje->num_pax }}</p>
-                        <p><strong>Estado:</strong> <span class="badge {{ $viaje->estadoColorClass() }}">{{ $viaje->estado }}</span></p>
-                        <p class="price"><sup>€</sup><span class="number">{{ $viaje->precio_persona }}</span><sub>/persona</sub></p>
+                        <p><strong>Estado:</strong> <span
+                                class="badge {{ $viaje->estadoColorClass() }}">{{ $viaje->estado }}</span></p>
+                        <p class="price"><sup>€</sup><span
+                                class="number">{{ $viaje->precio_persona }}</span><sub>/persona</sub></p>
 
                     </div>
                 </div>
             </div>
         </div>
-     <div class="container py-4">
-        <form id="reservaDesdeViaje" action="{{ route('reservas.create') }}" method="GET" class="d-inline">
-            @csrf
-            <input type="hidden" name="id_viaje" value="{{ $viaje->id }}">
-            <button type="submit" class="btn btn-primary px-5 mx-2 py-2 mb-5">Crear una reserva</button>
-        </form>
-        <a href="{{ url('viajes/' . $viaje->id . '/edit') }}" class="btn btn-secondary px-5 mx-2 py-2 mb-5">Editar</a>
-       <form action="{{ url('viajes/' . $viaje->id) }}" method="post"class="d-inline mx-2">
-            @method('DELETE')
-            @csrf
-            <button type="submit" class="btn btn-danger  px-5 py-2 mb-5">Eliminar</button>
-        </form>
-     </div>
 
-     <div class="container py-4">
+
+        <div class="container py-4">
+            <form id="reservaDesdeViaje" action="{{ route('reservas.create') }}" method="GET" class="d-inline">
+                @csrf
+                <input type="hidden" name="id_viaje" value="{{ $viaje->id }}">
+                <button type="submit" class="btn btn-primary px-5 mx-2 py-2 mb-5">Crear una reserva</button>
+            </form>
+            <a href="{{ url('viajes/' . $viaje->id . '/edit') }}" class="btn btn-secondary px-5 mx-2 py-2 mb-5">Editar</a>
+
+            <form id="deleteForm_{{ $viaje->id }}" action="{{ url('viajes/' . $viaje->id) }}" method="post"
+                class="d-inline">
+                @method('DELETE')
+                @csrf
+                <button type="button" onclick="confirmDelete({{ $viaje->id }})"
+                    class="btn btn-danger px-5 mx-2 py-2 mb-5">Eliminar</button>
+            </form>
+
+        </div>
+
+        <div class="container py-4">
+
+
             <h2>Reservas</h2>
-   {{--
-            <a href="{{ url('reservas/create') }}" class="btn btn-primary btn-sm">Nueva Reserva</a>
+
 
             <table class="table table-hover">
                 <thead>
@@ -60,25 +69,55 @@
                 </thead>
                 <tbody>
                     @foreach ($reservas as $reserva)
-                    <tr>
-                        <td>{{ $reserva->id }}</td>
-                        <td>{{ $reserva->nombre_cliente }}</td>
-                        <td>{{ $reserva->viaje->nombre }}</td>
-                        <td>{{ $reserva->fecha_reserva }}</td>
-                        <td>{{ $reserva->num_pax }}</td>
-                        <td>{{ $reserva->precio_total }} €</td>
-                        <td><span class="badge {{ $reserva->estadoColorClass() }}">{{ $reserva->estado }}</span></td>
-                        <td><a href="{{ url('reservas/' . $reserva->id . '/edit') }}" class="btn btn-secondary btn-sm">Editar</a></td>
-                        <td>
-                            <form action="{{ url('reservas/' . $reserva->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-
-
-                    @endforeach--}}
+                        <tr>
+                            <td>{{ $reserva->id }}</td>
+                            <td>{{ $reserva->nombre_cliente }}</td>
+                            <td>{{ $reserva->viaje->nombre }}</td>
+                            <td>{{ $reserva->fecha_reserva }}</td>
+                            <td>{{ $reserva->num_pax }}</td>
+                            <td>{{ $reserva->precio_total }} €</td>
+                            <td><span class="badge {{ $reserva->estadoColorClass() }}">{{ $reserva->estado }}</span></td>
+                            <td><a href="{{ url('reservas/' . $reserva->id . '/edit') }}"
+                                    class="btn btn-secondary btn-sm">Editar</a></td>
+                            <td>
+                                <form action="{{ url('reservas/' . $reserva->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
     </section>
+ <script>
+        function confirmDelete(id) {
+            // Mostrar una alerta personalizada de SweetAlert2
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción no se puede revertir y afectará a todas las reservas asociadas',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0000ff',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                // Si el usuario confirma, enviar el formulario de eliminación
+                if (result.isConfirmed) {
+                    var form = document.getElementById('deleteForm_' + id);
+                    form.submit();
+                    // Mostrar una alerta con SweetAlert2 después de enviar el formulario
+                    setTimeout(function() {
+                        Swal.fire(
+                            'Eliminado!',
+                            'El viaje ha sido eliminado.',
+                            'success'
+                        );
+                    }, 500);
+                }
+            });
+        }
+    </script>
 @endsection
