@@ -68,7 +68,6 @@
                         <tr>
                             <th>Localizador</th>
                             <th>Nombre Cliente</th>
-                            <th>Viaje</th>
                             <th>Fecha Reserva</th>
                             <th>N Viajeros</th>
                             <th>Precio total</th>
@@ -83,7 +82,6 @@
                             <tr>
                                 <td>{{ $reserva->id }}</td>
                                 <td>{{ $reserva->nombre_cliente }}</td>
-                                <td>{{ $reserva->viaje->nombre }}</td>
                                 <td>{{ $reserva->fecha_reserva }}</td>
                                 <td>{{ $reserva->num_pax }}</td>
                                 <td>{{ $reserva->precio_total }} €</td>
@@ -92,10 +90,11 @@
                                 <td><a href="{{ url('reservas/' . $reserva->id . '/edit') }}"
                                         class="btn btn-secondary btn-sm">Editar</a></td>
                                 <td>
-                                    <form action="{{ url('reservas/' . $reserva->id) }}" method="POST">
-                                        @csrf
+                                    <form id="deleteForm_{{ $reserva->id }}"
+                                        action="{{ url('reservas/' . $reserva->id) }}" method="post">
                                         @method('DELETE')
-                                        <button type="button" onclick="confirmDeleteReserva({{ $reserva->id }})"
+                                        @csrf
+                                        <button type="button" onclick="confirmDelete({{ $reserva->id }})"
                                             class="btn btn-danger btn-sm">Eliminar</button>
                                     </form>
                                 </td>
@@ -137,6 +136,7 @@
                 }
             });
         }
+
         function confirmDeleteReserva(id) {
             // Mostrar una alerta personalizada de SweetAlert2
             Swal.fire({

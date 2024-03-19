@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Viaje;
 use App\Models\Reserva;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ViajeController extends Controller
 {
@@ -72,6 +73,10 @@ class ViajeController extends Controller
         $reservas = Reserva::where('id_viaje', $id)->get();
         $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
 
+         // Formatear la fecha de reserva
+         $reservas->each(function ($reserva) {
+            $reserva->fecha_reserva = Carbon::parse($reserva->fecha_reserva)->format('Y-m-d');
+        });
 
         return view("viajes.show", ["viaje" => $viaje, "reservas" => $reservas, "viajeros" => $viajeros]);
     }

@@ -77,7 +77,7 @@
                 </div>
             </div>
 
-            <a href="javascript:history.go(-1)" class="my-4 btn btn-secondary"> Volver</a>
+            <a href={{ url()->previous() }} class="my-4 btn btn-secondary"> Volver</a>
             <button type="submit" class="my-4 btn btn-success"> Guardar</button>
         </form>
     </div>

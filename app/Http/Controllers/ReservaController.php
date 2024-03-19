@@ -6,6 +6,8 @@ use App\Models\Viaje;
 use App\Models\Reserva;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 
 class ReservaController extends Controller
 {
@@ -37,9 +39,21 @@ class ReservaController extends Controller
     {
         $id_viaje = $request->input('id_viaje');
 
-        $viajes = Viaje::all();
+        $viaje = null;
+        $plazasMaximas = null;
 
-        return view('reservas.create', ['viajes' => $viajes, 'id_viaje' => $id_viaje]);
+        if ($id_viaje) {
+            $viaje = Viaje::find(($id_viaje));
+            $plazasMaximas = $viaje->plazas_disponibles;
+        }
+        //pasar a select solo viajes no completos
+        $viajes_disponibles = Viaje::where('estado', '!=', 'completo')->get();
+
+              // Guardar la URL desde la que se accede al formulario para poder volver tras exito
+        Session::put('previous_url', URL::previous());
+
+
+        return view('reservas.create', ['viajes' => $viajes_disponibles, 'viaje' => $viaje, "plazasMaximas" => $plazasMaximas]);
     }
 
     /**
@@ -74,6 +88,14 @@ class ReservaController extends Controller
         $viaje->updateEstado($viajeId);
         $viaje->updatePlazasDisponibles($viajeId);
 
+
+
+       // URL anterior a la anterior desde la sesión
+       $previousPreviousUrl = Session::get('previous_url');
+
+       // Guardar la URL anterior a la anterior en la sesión
+       Session::put('previous_url', $previousPreviousUrl);
+
         return view('reservas.message', ['msg' => "Reserva creada correctamente"]);
     }
 
@@ -91,9 +113,15 @@ class ReservaController extends Controller
     public function edit($id)
     {
         $reserva = Reserva::find($id);
+        $viajeId = $reserva->id_viaje;
+        $viaje = Viaje::find($viajeId);
+        $plazasMaximas =  $reserva->num_pax + $viaje->plazas_disponibles;
+        echo $plazasMaximas;
 
+          // Guardar la URL desde la que se accede al formulario para poder volver tras exito
+        Session::put('previous_url', URL::previous());
 
-        return view("reservas.edit", ["reserva" => $reserva, "viajes" => Viaje::all()]);
+        return view("reservas.edit", ["reserva" => $reserva, "viaje" => $viaje, "plazasMaximas" => $plazasMaximas]);
     }
 
     /**
@@ -127,6 +155,14 @@ class ReservaController extends Controller
         $viaje = Viaje::findOrFail($viajeId);
         $viaje->updateEstado($viajeId);
         $viaje->updatePlazasDisponibles($viajeId);
+
+        // Obtener la URL anterior a la anterior desde la sesión
+        $previousPreviousUrl = Session::get('previous_url');
+
+        // Guardar la URL anterior a la anterior en la sesión
+        Session::put('previous_url', $previousPreviousUrl);
+
+
         return view('reservas.message', ['msg' => "Reserva modificada correctamente"]);
     }
 
@@ -142,6 +178,6 @@ class ReservaController extends Controller
 
         $viaje->updateEstado($reserva->id_viaje);
         $viaje->updatePlazasDisponibles($reserva->id_viaje);
-        return redirect('reservas');
+        return redirect()->back();
     }
 }
