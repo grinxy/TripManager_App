@@ -60,7 +60,7 @@
                 <p class="py-2" id="precio_total"></p> <!-- Resultado del cálculo de abajo JS -->
             </div>
         </div>
-        <a href="{{ url('reservas') }}" class="my-4 btn btn-secondary"> Volver</a>
+        <a href="javascript:history.go(-1)" class="my-4 btn btn-secondary"> Volver</a>
         <button type="submit" class="my-4 btn btn-success"> Guardar</button>
     </form>
 </div>
