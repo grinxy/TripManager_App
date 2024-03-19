@@ -20,14 +20,14 @@
             <div class="col-sm-5">
                 <select name="id_viaje" id="id_viaje" class="form-select" required>
 
-                        <!-- Si el usuario viene desde pagina viaje concreto o edita una reserva existente-->
-                        @isset($viaje)
-                            <option value="{{ $viaje->id }}"
-                                precio_persona="{{ $viaje->precio_persona }}"data-plazas-disponibles="{{ $viaje->plazas_disponibles }}"
-                                selected>
-                                {{ $viaje->nombre }}
-                            </option>
-                        @else
+                    <!-- Si el usuario viene desde pagina viaje concreto o edita una reserva existente-->
+                    @isset($viaje)
+                        <option value="{{ $viaje->id }}"
+                            precio_persona="{{ $viaje->precio_persona }}"data-plazas-disponibles="{{ $viaje->plazas_disponibles }}"
+                            selected>
+                            {{ $viaje->nombre }}
+                        </option>
+                    @else
                         <option value="" disabled selected>Seleccionar Viaje</option>
                         <!-- Mostrar todos los viajes disponibles -->
                         @foreach ($viajes as $viajeOption)
@@ -57,9 +57,8 @@
             <p class="text-muted small"> Plazas disponibles: {{ $viaje->plazas_disponibles }}</p>
         @else
             <input type="number" class="form-control" name="num_pax" id="num_pax"
-                value="{{ isset($reserva) ? $reserva->num_pax : old('num_pax') }}" required min= "1"
-                max='plazasDisponibles'>
-            <p class="text-muted small" id="plazas_disponibles"> </p>
+                value="{{ isset($reserva) ? $reserva->num_pax : old('num_pax') }}" required min= "1" max='12'>
+            <p class="text-muted small" id="plazas_disponibles">Plazas disponibles: </p>
         @endisset
 
     </div>
@@ -100,48 +99,45 @@
 <script>
     //calcular precio total reserva: num personas * precio viaje seleccionado
     document.addEventListener('DOMContentLoaded', function() {
-        // Obtener elementos del DOM
         var numPaxInput = document.getElementById('num_pax');
         var viajeSelect = document.getElementById('id_viaje');
         var precioTotalInput = document.getElementById('precio_total');
-        var plazasDisponibles = document.getElementById('plazas_disponibles');
-
-        // Evento para detectar cambios en el número de viajeros y el viaje seleccionado
-        numPaxInput.addEventListener('change', calcularPrecioTotal);
-        viajeSelect.addEventListener('change', calcularPrecioTotal);
-        calcularPrecioTotal();
-        // Evento para detectar cambios en el viaje seleccionado
-        viajeSelect.addEventListener('change', actualizarPlazasDisponibles)
+        var plazasDisponiblesValue = 0;
 
         function calcularPrecioTotal() {
             var numPax = parseFloat(numPaxInput.value);
             var precioPersona = parseFloat(viajeSelect.options[viajeSelect.selectedIndex].getAttribute(
                 'precio_persona'));
 
-
             if (!isNaN(numPax)) {
                 var precioTotal = numPax * precioPersona;
                 precioTotalInput.textContent = precioTotal.toFixed(2) + '€';
             } else {
-
                 precioTotalInput.textContent = '0.00€';
             }
         }
 
         function calcularPlazasDisponibles() {
-
-            var plazasDisponiblesValue = parseFloat(viajeSelect.options[viajeSelect.selectedIndex].getAttribute(
-                'plazas_disponibles'));
-
-
-            plazasDisponibles.textContent = 'Plazas disponibles: ' + plazasDisponiblesValue;
-
-            // Actualizar el atributo 'max' del input 'num_pax'
+            var selectedOption = viajeSelect.options[viajeSelect.selectedIndex];
+            plazasDisponiblesValue = parseFloat(selectedOption.getAttribute('data-plazas-disponibles'));
             numPaxInput.setAttribute('max', plazasDisponiblesValue);
+
+            if (isNaN(plazasDisponiblesValue)) {
+                document.getElementById('plazas_disponibles').textContent = 'Plazas disponibles: ';
+            } else {
+                document.getElementById('plazas_disponibles').textContent = 'Plazas disponibles: ' +
+                plazasDisponiblesValue;
+            }
+
+
         }
 
-        // Llamar a la función al cargar la página y cuando cambie el viaje seleccionado
-        document.addEventListener('DOMContentLoaded', calcularPlazasDisponibles);
+        //evento para cuando el select cambie y el viaje y viajeros esten definidos
+        numPaxInput.addEventListener('change', calcularPrecioTotal);
+        viajeSelect.addEventListener('change', calcularPrecioTotal);
+        calcularPrecioTotal();
         viajeSelect.addEventListener('change', calcularPlazasDisponibles);
+        calcularPlazasDisponibles();
+
     });
 </script>
