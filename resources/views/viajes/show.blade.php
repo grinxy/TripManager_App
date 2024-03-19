@@ -32,7 +32,7 @@
         <div class="container py-4">
             <form id="reservaDesdeViaje" action="{{ route('reservas.create') }}" method="GET" class="d-inline">
                 @csrf
-                <input type="hidden" name="id_viaje" value="{{ $viaje->id }}">
+                <input type="hidden" name="id_viaje" value="{{ $viaje->id }}"> <!--pasar en oculto la id del viaje-->
                 <button type="submit" class="btn btn-primary px-5 mx-2 py-2 mb-5">Crear una reserva</button>
             </form>
             <a href="{{ url('viajes/' . $viaje->id . '/edit') }}" class="btn btn-secondary px-5 mx-2 py-2 mb-5">Editar</a>
@@ -50,48 +50,59 @@
         <div class="container py-4">
 
 
+
             <h2>Reservas</h2>
-
-
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Localizador</th>
-                        <th>Nombre Cliente</th>
-                        <th>Viaje</th>
-                        <th>Fecha Reserva</th>
-                        <th>N Viajeros</th>
-                        <th>Precio total</th>
-                        <th>Estado</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($reservas as $reserva)
+            @if ($reservas->isEmpty())
+                <div class="alert alert-info" role="alert">
+                    No hay reservas para mostrar
+                </div>
+            @else
+                <table class="table table-hover">
+                    <thead>
                         <tr>
-                            <td>{{ $reserva->id }}</td>
-                            <td>{{ $reserva->nombre_cliente }}</td>
-                            <td>{{ $reserva->viaje->nombre }}</td>
-                            <td>{{ $reserva->fecha_reserva }}</td>
-                            <td>{{ $reserva->num_pax }}</td>
-                            <td>{{ $reserva->precio_total }} €</td>
-                            <td><span class="badge {{ $reserva->estadoColorClass() }}">{{ $reserva->estado }}</span></td>
-                            <td><a href="{{ url('reservas/' . $reserva->id . '/edit') }}"
-                                    class="btn btn-secondary btn-sm">Editar</a></td>
-                            <td>
-                                <form action="{{ url('reservas/' . $reserva->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                </form>
-                            </td>
+                            <th>Localizador</th>
+                            <th>Nombre Cliente</th>
+                            <th>Viaje</th>
+                            <th>Fecha Reserva</th>
+                            <th>N Viajeros</th>
+                            <th>Precio total</th>
+                            <th>Estado</th>
+                            <th></th>
+                            <th></th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+
+                        @foreach ($reservas as $reserva)
+                            <tr>
+                                <td>{{ $reserva->id }}</td>
+                                <td>{{ $reserva->nombre_cliente }}</td>
+                                <td>{{ $reserva->viaje->nombre }}</td>
+                                <td>{{ $reserva->fecha_reserva }}</td>
+                                <td>{{ $reserva->num_pax }}</td>
+                                <td>{{ $reserva->precio_total }} €</td>
+                                <td><span class="badge {{ $reserva->estadoColorClass() }}">{{ $reserva->estado }}</span>
+                                </td>
+                                <td><a href="{{ url('reservas/' . $reserva->id . '/edit') }}"
+                                        class="btn btn-secondary btn-sm">Editar</a></td>
+                                <td>
+                                    <form action="{{ url('reservas/' . $reserva->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+
+            @endif
+        </div>
+
     </section>
- <script>
+    <script>
         function confirmDelete(id) {
             // Mostrar una alerta personalizada de SweetAlert2
             Swal.fire({
@@ -120,4 +131,5 @@
             });
         }
     </script>
+
 @endsection
