@@ -37,9 +37,11 @@ class ReservaController extends Controller
     {
         $id_viaje = $request->input('id_viaje');
 
-        $viajes = Viaje::all();
+        $viaje = Viaje::find(($id_viaje));
+       //pasar a select solo viajes no completos
+        $viajes_disponibles = Viaje::where('estado', '!=', 'completo')->get();
 
-        return view('reservas.create', ['viajes' => $viajes, 'id_viaje' => $id_viaje]);
+        return view('reservas.create', ['viajes' => $viajes_disponibles, 'viaje' => $viaje]);
     }
 
     /**
@@ -91,9 +93,10 @@ class ReservaController extends Controller
     public function edit($id)
     {
         $reserva = Reserva::find($id);
+        $viajeId = $reserva->id_viaje;
+        $viaje = Viaje::find($viajeId);
 
-
-        return view("reservas.edit", ["reserva" => $reserva, "viajes" => Viaje::all()]);
+        return view("reservas.edit", ["reserva" => $reserva, "viaje" => $viaje]);
     }
 
     /**
