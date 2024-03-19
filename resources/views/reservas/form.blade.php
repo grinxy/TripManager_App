@@ -10,9 +10,11 @@
     @endif
     <form action="{{ isset($reserva) ? url('reservas/' . $reserva->id) : url('reservas') }}" method="post">
         @csrf
+        <!--si reserva definida, editar, si no esta definida, crear-->
         @isset($reserva)
         @method("PUT")
         @endisset
+
         <div class="mb-3 row">
             <label for="id_viaje" class="col-sm-2 col-form-label">Viaje</label>
             <div class="col-sm-5">
@@ -20,7 +22,7 @@
                     <option value=""> Seleccionar Viaje</option>
                     @foreach ($viajes as $viaje)
                     <option value="{{ $viaje->id }}" precio_persona="{{ $viaje->precio_persona }}"
-                        {{ isset($reserva) && $reserva->id_viaje == $viaje->id ? 'selected' : '' }}>
+                        {{ (isset($reserva) && $reserva->id_viaje == $viaje->id) || (isset($id_viaje) && $id_viaje == $viaje->id)? 'selected' : '' }}>
                         {{ $viaje->nombre }}
                     </option>
                     @endforeach

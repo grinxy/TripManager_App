@@ -36,8 +36,10 @@ class ReservaController extends Controller
     public function create(Request $request)
     {
         $id_viaje = $request->input('id_viaje');
-         $viajes = Viaje::all();
-        return view('reservas.create', ['viajes' => $viajes, 'id_viaje_concreto' => $id_viaje]);
+
+        $viajes = Viaje::all();
+
+        return view('reservas.create', ['viajes' => $viajes, 'id_viaje' => $id_viaje]);
     }
 
     /**
