@@ -22,7 +22,7 @@ class ViajeSeeder extends Seeder
                 'destino' => 'Barcelona',
                 'precio_persona' => 150,
                 'num_pax' => 12,
-                'estado' => 'confirmado',
+                'estado' => 'no confirmado',
                 'imagen' => 'https://www.spain.info/.content/imagenes/cabeceras-grandes/cataluna/park-guell-barcelona-s-305364611.jpg',
             ],
             [
@@ -42,7 +42,7 @@ class ViajeSeeder extends Seeder
                 'destino' => 'Madrid',
                 'precio_persona' => 1800,
                 'num_pax' => 12,
-                'estado' => 'confirmado',
+                'estado' => 'no confirmado',
                 'imagen' => 'https://www.spain.info/.content/imagenes/cabeceras-grandes/madrid/calle-gran-via-madrid-s333961043.jpg',
             ],
             [
@@ -52,7 +52,7 @@ class ViajeSeeder extends Seeder
                 'destino' => 'Sevilla',
                 'precio_persona' => 1200,
                 'num_pax' => 12,
-                'estado' => 'confirmado',
+                'estado' => 'no confirmado',
                 'imagen' => 'https://cdn.getyourguide.com/img/tour/b203ad7fded51715.jpeg/146.jpg',
             ],
             [
@@ -62,7 +62,7 @@ class ViajeSeeder extends Seeder
                 'destino' => 'Málaga',
                 'precio_persona' => 1600,
                 'num_pax' => 12,
-                'estado' => 'confirmado',
+                'estado' => 'no confirmado',
                 'imagen' => 'https://media-cdn.tripadvisor.com/media/photo-s/19/5e/68/d9/the-costadelsol-is-a.jpg',
             ],
         ];

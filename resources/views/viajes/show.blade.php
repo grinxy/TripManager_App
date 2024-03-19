@@ -20,6 +20,7 @@
                         <p><strong>Plazas Máximas:</strong> {{ $viaje->num_pax }}</p>
                         <p><strong>Estado:</strong> <span
                                 class="badge {{ $viaje->estadoColorClass() }}">{{ $viaje->estado }}</span></p>
+                        <p><strong>Viajeros inscritos:</strong> {{ $viajeros }}
                         <p class="price"><sup>€</sup><span
                                 class="number">{{ $viaje->precio_persona }}</span><sub>/persona</sub></p>
 
@@ -33,17 +34,18 @@
             <form id="reservaDesdeViaje" action="{{ route('reservas.create') }}" method="GET" class="d-inline">
                 @csrf
                 <input type="hidden" name="id_viaje" value="{{ $viaje->id }}"> <!--pasar en oculto la id del viaje-->
-                <button type="submit" class="btn btn-primary px-5 mx-2 py-2 mb-5">Crear una reserva</button>
+                <button type="submit" class="btn btn-primary px-4 mx-2 py-2 mb-5">Crear una reserva</button>
             </form>
-            <a href="{{ url('viajes/' . $viaje->id . '/edit') }}" class="btn btn-secondary px-5 mx-2 py-2 mb-5">Editar</a>
+            <a href="{{ url('viajes/' . $viaje->id . '/edit') }}" class="btn btn-warning px-4 mx-2 py-2 mb-5">Editar</a>
 
             <form id="deleteForm_{{ $viaje->id }}" action="{{ url('viajes/' . $viaje->id) }}" method="post"
                 class="d-inline">
                 @method('DELETE')
                 @csrf
                 <button type="button" onclick="confirmDelete({{ $viaje->id }})"
-                    class="btn btn-danger px-5 mx-2 py-2 mb-5">Eliminar</button>
+                    class="btn btn-danger px-4 mx-2 py-2 mb-5">Eliminar</button>
             </form>
+            <a href="{{ url('viajes') }}" class="btn btn-secondary px-3 mx-2 py-2 mb-5">Volver</a>
 
         </div>
 

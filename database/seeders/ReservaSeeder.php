@@ -1,6 +1,7 @@
 <?php
 namespace Database\Seeders;
         use App\Models\Reserva;
+        use App\Models\Viaje;
         use Illuminate\Database\Seeder;
         use Illuminate\Support\Facades\DB;
         use Carbon\Carbon;
@@ -76,9 +77,36 @@ namespace Database\Seeders;
 
                     ]);
                 }
+   // Actualizar el estado de los viajes después de insertar las reservas
+   $this->updateEstadoViajes();
+}
 
-            }
+// Método para actualizar el estado de los viajes
+private function updateEstadoViajes()
+{
+    // Obtener todos los viajes
+    $viajes = Viaje::all();
+
+    // Iterar sobre cada viaje
+    foreach ($viajes as $viaje) {
+        // Obtener el número total de pasajeros para este viaje
+        $viajeros = Reserva::where('id_viaje', $viaje->id)->sum('num_pax');
+
+        // Actualizar el estado del viaje según el número total de pasajeros
+        if ($viajeros < 8) {
+            $viaje->estado = 'No confirmado';
+        } elseif ($viajeros >= 8 && $viajeros < $viaje->num_pax) {
+            $viaje->estado = 'Confirmado';
+        } elseif ($viajeros == $viaje->num_pax) {
+            $viaje->estado = 'Completo';
         }
+
+        // Guardar el estado actualizado del viaje en la base de datos
+        $viaje->save();
+    }
+}
+}
+
 
 
 

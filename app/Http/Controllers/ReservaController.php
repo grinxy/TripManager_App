@@ -69,6 +69,7 @@ class ReservaController extends Controller
     $reserva->id_viaje = $request->input('id_viaje');
 
     $reserva->save();
+    Viaje::updateEstado();
     return view('reservas.message', ['msg'=>"Reserva creada correctamente"]);
     }
 
@@ -115,7 +116,7 @@ class ReservaController extends Controller
     $reserva->estado = $request->input('estado');
     $reserva->id_viaje = $request->input('id_viaje');
 
-
+    Viaje::updateEstado();
     $reserva->save();
     return view('reservas.message', ['msg'=>"Reserva modificada correctamente"]);
     }
@@ -125,9 +126,12 @@ class ReservaController extends Controller
      */
     public function destroy($id)
     {
-       $reserva = Reserva::find($id);
-        $reserva->delete();
 
+        $reserva = Reserva::find($id);
+        $reserva->delete();
+        $viaje = Viaje::findOrFail($reserva->id_viaje);
+
+        Viaje::updateEstado();
         return redirect('reservas');
     }
 }

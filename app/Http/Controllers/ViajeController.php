@@ -43,7 +43,6 @@ class ViajeController extends Controller
             'destino' => 'required|string',
             'precio_persona' => 'required',
             'num_pax' => 'required',
-            'estado' => 'required',
             'imagen' => 'required',
         ]);
 
@@ -54,8 +53,9 @@ class ViajeController extends Controller
         $viaje->destino = $request->input('destino');
         $viaje->precio_persona = $request->input('precio_persona');
         $viaje->num_pax = $request->input('num_pax');
-        $viaje->estado = $request->input('estado');
+        $viaje->estado = 'no confirmado';
         $viaje->imagen = $request->input('imagen');
+
 
         $viaje->save();
         return view('viajes.message', ['msg' => "Viaje creado correctamente"]);
@@ -68,9 +68,10 @@ class ViajeController extends Controller
     {
         $viaje = Viaje::find($id);
         $reservas = Reserva::where('id_viaje', $id)->get();
+        $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
 
 
-        return view("viajes.show", ["viaje" => $viaje, "reservas" => $reservas]);
+        return view("viajes.show", ["viaje" => $viaje, "reservas" => $reservas, "viajeros" => $viajeros ]);
     }
 
     /**
@@ -79,6 +80,7 @@ class ViajeController extends Controller
     public function edit($id)
     { {
             $viaje = Viaje::find($id);
+
             return view("viajes.edit", ["viaje" => $viaje]);
         }
     }
@@ -95,7 +97,6 @@ class ViajeController extends Controller
             'destino' => 'required|string',
             'precio_persona' => 'required',
             'num_pax' => 'required',
-            'estado' => 'required',
             'imagen' => 'required',
         ]);
 
@@ -106,7 +107,7 @@ class ViajeController extends Controller
         $viaje->destino = $request->input('destino');
         $viaje->precio_persona = $request->input('precio_persona');
         $viaje->num_pax = $request->input('num_pax');
-        $viaje->estado = $request->input('estado');
+        $viaje->estado = $this->updateEstado($id);
         $viaje->imagen = $request->input('imagen');
 
         $viaje->save();
@@ -123,4 +124,23 @@ class ViajeController extends Controller
 
         return view('viajes.message', ['msg' => "Viaje eliminado correctamente"]);
     }
+
+    public function updateEstado($id)
+    {
+        $viaje = Viaje::find($id);
+        $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
+
+        if($viajeros <8)
+        {
+            $viaje->estado = 'No confirmado';
+        }elseif($viajeros < $viaje->num_pax)
+        {
+            $viaje->estado = 'Confirmado';
+        }elseif($viajeros == $viaje ->num_pax)
+        {
+            $viaje->estado = 'Completo';
+        }
+        return $viaje->estado;
+    }
+
 }

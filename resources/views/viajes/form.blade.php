@@ -64,12 +64,8 @@
             <div class="mb-3 row">
                 <label for="estado" class="col-sm-2 col-form-label">Estado viaje</label>
                 <div class="col-sm-5">
-                    <select name="estado" id="estado" class="form-select" required>
-                        <option value="">Seleccionar estado</option>
-                        <<option value="no confirmado" {{ (isset($viaje) && $viaje->estado == 'no confirmado') ? 'selected' : (old('estado') == 'no confirmado' ? 'selected' : '') }}>No confirmado</option>
-                        <option value="confirmado" {{ (isset($viaje) && $viaje->estado == 'confirmado') ? 'selected' : (old('estado') == 'confirmado' ? 'selected' : '' ) }}> Confirmado</option>
-                        <option value="completo" {{ (isset($viaje) && $viaje->estado == 'completo') ? 'selected' : (old('estado') == 'completo' ? 'selected' : '' ) }}> Completo</option>
-                    </select>
+                    <p> {{ isset($viaje)? $viaje->estado : 'No confirmado' }}</p>
+
                 </div>
             </div>
             <div class="mb-3 row">

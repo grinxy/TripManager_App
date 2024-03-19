@@ -53,6 +53,8 @@
                                         <p><strong>Regreso:</strong> {{ $viaje->fecha_regreso }}</p>
                                         <p><strong>Destino:</strong> {{ $viaje->destino }}</p>
                                         <p><strong>Plazas Máximas:</strong>{{ $viaje->num_pax }}</p>
+                                        <p><span
+                                            class="badge {{ $viaje->estadoColorClass() }}">{{ $viaje->estado }}</span></p>
                                     </ul>
                                     <a href="{{ url('viajes/' . $viaje->id . '/show') }}"
                                         class="btn btn-primary px-5 py-2">Gestionar</a>
