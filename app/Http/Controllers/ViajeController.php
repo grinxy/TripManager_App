@@ -71,7 +71,7 @@ class ViajeController extends Controller
         $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
 
 
-        return view("viajes.show", ["viaje" => $viaje, "reservas" => $reservas, "viajeros" => $viajeros ]);
+        return view("viajes.show", ["viaje" => $viaje, "reservas" => $reservas, "viajeros" => $viajeros]);
     }
 
     /**
@@ -130,17 +130,13 @@ class ViajeController extends Controller
         $viaje = Viaje::find($id);
         $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
 
-        if($viajeros <8)
-        {
+        if ($viajeros < 8) {
             $viaje->estado = 'No confirmado';
-        }elseif($viajeros < $viaje->num_pax)
-        {
+        } elseif ($viajeros < $viaje->num_pax) {
             $viaje->estado = 'Confirmado';
-        }elseif($viajeros == $viaje ->num_pax)
-        {
+        } elseif ($viajeros == $viaje->num_pax) {
             $viaje->estado = 'Completo';
         }
         return $viaje->estado;
     }
-
 }
