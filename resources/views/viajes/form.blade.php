@@ -64,7 +64,7 @@
             <div class="mb-3 row">
                 <label for="estado" class="col-sm-2 col-form-label">Estado viaje</label>
                 <div class="col-sm-5">
-                    <p> {{ isset($viaje)? $viaje->estado : 'No confirmado' }}</p>
+                    <p class="px-2 pt-1"> {{ isset($viaje)? $viaje->estado : 'No confirmado' }}</p>
 
                 </div>
             </div>

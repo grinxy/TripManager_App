@@ -52,25 +52,29 @@ class ReservaController extends Controller
             'num_pax' => 'required',
             'estado' => 'required',
             'id_viaje' => 'required',
-    ]);
+        ]);
 
-    //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
-    $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
-    $precioPersona = $viaje->precio_persona;
-    $precioTotal = $precioPersona * $request->input('num_pax');
+        //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
+        $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
+        $precioPersona = $viaje->precio_persona;
+        $precioTotal = $precioPersona * $request->input('num_pax');
 
 
-    $reserva = new Reserva();
-    $reserva->nombre_cliente = $request->input('nombre_cliente');
-    $reserva->num_pax = $request->input('num_pax');
-    $reserva->precio_total = $precioTotal;
-    $reserva->fecha_reserva = Carbon::today();
-    $reserva->estado = $request->input('estado');
-    $reserva->id_viaje = $request->input('id_viaje');
+        $reserva = new Reserva();
+        $reserva->nombre_cliente = $request->input('nombre_cliente');
+        $reserva->num_pax = $request->input('num_pax');
+        $reserva->precio_total = $precioTotal;
+        $reserva->fecha_reserva = Carbon::today();
+        $reserva->estado = $request->input('estado');
+        $reserva->id_viaje = $request->input('id_viaje');
 
-    $reserva->save();
-    Viaje::updateEstado();
-    return view('reservas.message', ['msg'=>"Reserva creada correctamente"]);
+        $reserva->save();
+        $viajeId = $reserva->id_viaje;
+        $viaje = Viaje::findOrFail($viajeId);
+        $viaje->updateEstado($viajeId);
+        $viaje->updatePlazasDisponibles($viajeId);
+
+        return view('reservas.message', ['msg' => "Reserva creada correctamente"]);
     }
 
     /**
@@ -87,7 +91,9 @@ class ReservaController extends Controller
     public function edit($id)
     {
         $reserva = Reserva::find($id);
-        return view("reservas.edit", ["reserva"=> $reserva, "viajes" => Viaje::all()]);
+
+
+        return view("reservas.edit", ["reserva" => $reserva, "viajes" => Viaje::all()]);
     }
 
     /**
@@ -100,25 +106,28 @@ class ReservaController extends Controller
             'num_pax' => 'required',
             'estado' => 'required',
             'id_viaje' => 'required',
-    ]);
+        ]);
 
-    //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
-    $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
-    $precioPersona = $viaje->precio_persona;
-    $precioTotal = $precioPersona * $request->input('num_pax');
+        //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
+        $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
+        $precioPersona = $viaje->precio_persona;
+        $precioTotal = $precioPersona * $request->input('num_pax');
 
 
 
-    $reserva = Reserva::find($id);
-    $reserva->nombre_cliente = $request->input('nombre_cliente');
-    $reserva->num_pax = $request->input('num_pax');
-    $reserva->precio_total = $precioTotal;
-    $reserva->estado = $request->input('estado');
-    $reserva->id_viaje = $request->input('id_viaje');
+        $reserva = Reserva::find($id);
+        $reserva->nombre_cliente = $request->input('nombre_cliente');
+        $reserva->num_pax = $request->input('num_pax');
+        $reserva->precio_total = $precioTotal;
+        $reserva->estado = $request->input('estado');
+        $reserva->id_viaje = $request->input('id_viaje');
 
-    Viaje::updateEstado();
-    $reserva->save();
-    return view('reservas.message', ['msg'=>"Reserva modificada correctamente"]);
+        $reserva->save();
+        $viajeId = $reserva->id_viaje;
+        $viaje = Viaje::findOrFail($viajeId);
+        $viaje->updateEstado($viajeId);
+        $viaje->updatePlazasDisponibles($viajeId);
+        return view('reservas.message', ['msg' => "Reserva modificada correctamente"]);
     }
 
     /**
@@ -131,7 +140,8 @@ class ReservaController extends Controller
         $reserva->delete();
         $viaje = Viaje::findOrFail($reserva->id_viaje);
 
-        Viaje::updateEstado();
+        $viaje->updateEstado($reserva->id_viaje);
+        $viaje->updatePlazasDisponibles($reserva->id_viaje);
         return redirect('reservas');
     }
 }

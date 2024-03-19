@@ -20,6 +20,7 @@ class ViajeController extends Controller
             $viajes = Viaje::where('destino', 'LIKE', '%' . $destino . '%')->get()->sortBy(['fecha_salida', 'desc']);
         }
 
+
         return view('viajes.index', ['viajes' => $viajes, 'viajes_select' => Viaje::all()]);
     }
 
@@ -55,6 +56,7 @@ class ViajeController extends Controller
         $viaje->num_pax = $request->input('num_pax');
         $viaje->estado = 'no confirmado';
         $viaje->imagen = $request->input('imagen');
+        $viaje->plazas_disponibles = $viaje->num_pax;
 
 
         $viaje->save();
@@ -107,8 +109,9 @@ class ViajeController extends Controller
         $viaje->destino = $request->input('destino');
         $viaje->precio_persona = $request->input('precio_persona');
         $viaje->num_pax = $request->input('num_pax');
-        $viaje->estado = $this->updateEstado($id);
+        $viaje->estado = $viaje->updateEstado($id);
         $viaje->imagen = $request->input('imagen');
+        $viaje->plazas_disponibles = $viaje->plazasDisponibles();
 
         $viaje->save();
         return view('viajes.message', ['msg' => "Viaje modificado correctamente"]);
@@ -125,18 +128,6 @@ class ViajeController extends Controller
         return view('viajes.message', ['msg' => "Viaje eliminado correctamente"]);
     }
 
-    public function updateEstado($id)
-    {
-        $viaje = Viaje::find($id);
-        $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
 
-        if ($viajeros < 8) {
-            $viaje->estado = 'No confirmado';
-        } elseif ($viajeros < $viaje->num_pax) {
-            $viaje->estado = 'Confirmado';
-        } elseif ($viajeros == $viaje->num_pax) {
-            $viaje->estado = 'Completo';
-        }
-        return $viaje->estado;
-    }
+
 }

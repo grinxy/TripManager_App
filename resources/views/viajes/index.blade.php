@@ -53,6 +53,7 @@
                                         <p><strong>Regreso:</strong> {{ $viaje->fecha_regreso }}</p>
                                         <p><strong>Destino:</strong> {{ $viaje->destino }}</p>
                                         <p><strong>Plazas Máximas:</strong>{{ $viaje->num_pax }}</p>
+                                        <p><strong>disponibles:</strong>{{ $viaje->plazas_disponibles }}</p>
                                         <p><span
                                             class="badge {{ $viaje->estadoColorClass() }}">{{ $viaje->estado }}</span></p>
                                     </ul>

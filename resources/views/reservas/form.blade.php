@@ -10,11 +10,9 @@
     @endif
     <form action="{{ isset($reserva) ? url('reservas/' . $reserva->id) : url('reservas') }}" method="post">
         @csrf
-        <!--si reserva definida, editar, si no esta definida, crear-->
         @isset($reserva)
         @method("PUT")
         @endisset
-
         <div class="mb-3 row">
             <label for="id_viaje" class="col-sm-2 col-form-label">Viaje</label>
             <div class="col-sm-5">
@@ -22,7 +20,7 @@
                     <option value=""> Seleccionar Viaje</option>
                     @foreach ($viajes as $viaje)
                     <option value="{{ $viaje->id }}" precio_persona="{{ $viaje->precio_persona }}"
-                        {{ (isset($reserva) && $reserva->id_viaje == $viaje->id) || (isset($id_viaje) && $id_viaje == $viaje->id)? 'selected' : '' }}>
+                        {{ isset($reserva) && $reserva->id_viaje == $viaje->id ? 'selected' : '' }}>
                         {{ $viaje->nombre }}
                     </option>
                     @endforeach
@@ -62,7 +60,7 @@
                 <p class="py-2" id="precio_total"></p> <!-- Resultado del cálculo de abajo JS -->
             </div>
         </div>
-        <a href="javascript:history.go(-1)" class="my-4 btn btn-secondary"> Volver</a>
+        <a href="{{ url('reservas') }}" class="my-4 btn btn-secondary"> Volver</a>
         <button type="submit" class="my-4 btn btn-success"> Guardar</button>
     </form>
 </div>
@@ -77,18 +75,21 @@
         // Evento para detectar cambios en el número de viajeros y el viaje seleccionado
         numPaxInput.addEventListener('change', calcularPrecioTotal);
         viajeSelect.addEventListener('change', calcularPrecioTotal);
+        calcularPrecioTotal();
 
         function calcularPrecioTotal() {
-            var numPax = isNaN(parseFloat(numPaxInput.value)) ? 0 : parseFloat(numPaxInput.value);
-
+            var numPax = parseFloat(numPaxInput.value);
             var precioPersona = parseFloat(viajeSelect.options[viajeSelect.selectedIndex].getAttribute(
                 'precio_persona'));
 
-            var precioTotal = numPax * precioPersona;
 
-            precioTotalInput.textContent = precioTotal.toFixed(
-                2) + '€';
+            if (!isNaN(numPax)) {
+                var precioTotal = numPax * precioPersona;
+                precioTotalInput.textContent = precioTotal.toFixed(2) + '€';
+            } else {
 
+                precioTotalInput.textContent = '0.00€';
+            }
         }
     });
 </script>

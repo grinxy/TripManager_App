@@ -95,7 +95,8 @@
                                     <form action="{{ url('reservas/' . $reserva->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                        <button type="button" onclick="confirmDeleteReserva({{ $reserva->id }})"
+                                            class="btn btn-danger btn-sm">Eliminar</button>
                                     </form>
                                 </td>
                             </tr>
@@ -130,6 +131,33 @@
                         Swal.fire(
                             'Eliminado!',
                             'El viaje ha sido eliminado.',
+                            'success'
+                        );
+                    }, 500);
+                }
+            });
+        }
+        function confirmDeleteReserva(id) {
+            // Mostrar una alerta personalizada de SweetAlert2
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción no se puede revertir',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0000ff',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                // Si el usuario confirma, enviar el formulario de eliminación
+                if (result.isConfirmed) {
+                    var form = document.getElementById('deleteForm_' + id);
+                    form.submit();
+                    // Mostrar una alerta con SweetAlert2 después de enviar el formulario
+                    setTimeout(function() {
+                        Swal.fire(
+                            'Eliminado!',
+                            'La reserva ha sido eliminada.',
                             'success'
                         );
                     }, 500);
