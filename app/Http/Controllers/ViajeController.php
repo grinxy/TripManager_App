@@ -100,6 +100,7 @@ class ViajeController extends Controller
             'imagen' => 'required',
         ]);
 
+<<<<<<< Updated upstream
             $viaje = Viaje::find($id);
             $viaje->nombre = $request->input('nombre');
             $viaje->fecha_salida = $request->input('fecha_salida');
@@ -109,6 +110,18 @@ class ViajeController extends Controller
             $viaje->num_pax = $request->input('num_pax');
             $viaje->estado = $request->input('estado');
             $viaje->imagen = $request->input('imagen');
+=======
+        $viaje = Viaje::find($id);
+        $viaje->nombre = $request->input('nombre');
+        $viaje->fecha_salida = $request->input('fecha_salida');
+        $viaje->fecha_regreso = $request->input('fecha_regreso');
+        $viaje->destino = $request->input('destino');
+        $viaje->precio_persona = $request->input('precio_persona');
+        $viaje->num_pax = $request->input('num_pax');
+        $viaje->estado = $viaje->updateEstado($id);
+        $viaje->imagen = $request->input('imagen');
+        $viaje->plazas_disponibles = $viaje->updatePlazasDisponibles($id);
+>>>>>>> Stashed changes
 
             $viaje->save();
             return view('viajes.message', ['msg'=>"Viaje modificado correctamente"]);

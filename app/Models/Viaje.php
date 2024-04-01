@@ -25,4 +25,37 @@ class Viaje extends Model
     }
 }
 
+<<<<<<< Updated upstream
+=======
+    public function updatePlazasDisponibles($id)
+    {
+
+        $viaje = Viaje::find($id);
+        $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
+
+        $plazas_disponibles = $this->num_pax - $viajeros;
+        $viaje->plazas_disponibles = $plazas_disponibles;
+        $viaje -> save();
+
+    return $viaje->plazas_disponibles;
+
+    }
+    public function updateEstado($id)
+    {
+        $viaje = Viaje::find($id);
+    $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
+
+    if ($viajeros < 8) {
+        $viaje->estado = 'No confirmado';
+    } elseif ($viajeros < $viaje->num_pax) {
+        $viaje->estado = 'Confirmado';
+    } elseif ($viajeros == $viaje->num_pax) {
+        $viaje->estado = 'Completo';
+    }
+
+    $viaje->save();
+    return $viaje->estado;
+    }
+
+>>>>>>> Stashed changes
 }
