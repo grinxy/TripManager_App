@@ -4,14 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class Viaje extends Model
 {
 
+    protected $dateFormat = 'Y-m-d';
     public function reserva()
     {
         return $this->belongsTo(Reserva::class, 'id_viaje', 'id');
     }
+
     public function getImagenUrlAttribute()
     {
         return asset('storage/' . $this->imagen);
