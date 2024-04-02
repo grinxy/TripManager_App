@@ -49,17 +49,14 @@ class ReservaController extends Controller
         //pasar a select solo viajes no completos
         $viajes_disponibles = Viaje::where('estado', '!=', 'completo')->get();
 
-              // Guardar la URL desde la que se accede al formulario para poder volver tras exito
+        // Guardar la URL desde la que se accede al formulario para poder volver tras exito
         Session::put('previous_url', URL::previous());
 
 
-        return view('reservas.create', ['viajes' => $viajes_disponibles, 'viaje' => $viaje, "plazasMaximas" => $plazasMaximas]);
+        return view('reservas.create', compact('viajes_disponibles', 'viaje', 'plazasMaximas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function validateData(Request $request)
     {
         $request->validate([
             'nombre_cliente' => 'required|string',
@@ -67,14 +64,19 @@ class ReservaController extends Controller
             'estado' => 'required',
             'id_viaje' => 'required',
         ]);
+    }
+    public function processReserva(Request $request, $id = null)
+    {
+        $this->validateData($request);
+        $precioTotal = $this->totalPriceCalculator($request);
 
-        //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
-        $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
-        $precioPersona = $viaje->precio_persona;
-        $precioTotal = $precioPersona * $request->input('num_pax');
-
-
-        $reserva = new Reserva();
+        if ($id == null) {
+            $reserva = new Reserva();
+            $msg = "Reserva creada correctamente";
+        } else {
+            $reserva = Reserva::find($id);
+            $msg = "Reserva modificada correctamente";
+        }
         $reserva->nombre_cliente = $request->input('nombre_cliente');
         $reserva->num_pax = $request->input('num_pax');
         $reserva->precio_total = $precioTotal;
@@ -83,20 +85,37 @@ class ReservaController extends Controller
         $reserva->id_viaje = $request->input('id_viaje');
 
         $reserva->save();
-        $viajeId = $reserva->id_viaje;
+        $this->updateStatusAndPlaces($reserva->id_viaje);
+        return $msg;
+    }
+    public function totalPriceCalculator(Request $request)
+    {
+
+        //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
+        $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
+        $precioPersona = $viaje->precio_persona;
+        $precioTotal = $precioPersona * $request->input('num_pax');
+
+        return $precioTotal;
+    }
+    public function updateStatusAndPlaces(int $viajeId)
+    {
         $viaje = Viaje::findOrFail($viajeId);
         $viaje->updateEstado($viajeId);
         $viaje->updatePlazasDisponibles($viajeId);
+    }
+    /**
+     * Store a newly created resource in storage.
+     */
 
+    public function store(Request $request)  //null por defecto para cuando sea crear
+    {
+        $msg = $this->processReserva($request);
 
+        $previousPreviousUrl = Session::get('previous_url');
+        Session::put('previous_url', $previousPreviousUrl);
 
-       // URL anterior a la anterior desde la sesión
-       $previousPreviousUrl = Session::get('previous_url');
-
-       // Guardar la URL anterior a la anterior en la sesión
-       Session::put('previous_url', $previousPreviousUrl);
-
-        return view('reservas.message', ['msg' => "Reserva creada correctamente"]);
+        return view('reservas.message', ['msg' => $msg]);
     }
 
     /**
@@ -118,7 +137,7 @@ class ReservaController extends Controller
         $plazasMaximas =  $reserva->num_pax + $viaje->plazas_disponibles;
 
 
-          // Guardar la URL desde la que se accede al formulario para poder volver tras exito
+        // Guardar la URL desde la que se accede al formulario para poder volver tras exito
         Session::put('previous_url', URL::previous());
 
         return view("reservas.edit", ["reserva" => $reserva, "viaje" => $viaje, "plazasMaximas" => $plazasMaximas]);
@@ -129,41 +148,11 @@ class ReservaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nombre_cliente' => 'required|string',
-            'num_pax' => 'required',
-            'estado' => 'required',
-            'id_viaje' => 'required',
-        ]);
-
-        //crear precio total viaje dsd servidor. En vista esta calculo para mostrar precio tambien
-        $viaje = Viaje::findOrFail($request->input('id_viaje'));  //findOrFail (Eloquent) --> si no encuentra el viaje lanza excepcion
-        $precioPersona = $viaje->precio_persona;
-        $precioTotal = $precioPersona * $request->input('num_pax');
-
-
-
-        $reserva = Reserva::find($id);
-        $reserva->nombre_cliente = $request->input('nombre_cliente');
-        $reserva->num_pax = $request->input('num_pax');
-        $reserva->precio_total = $precioTotal;
-        $reserva->estado = $request->input('estado');
-        $reserva->id_viaje = $request->input('id_viaje');
-
-        $reserva->save();
-        $viajeId = $reserva->id_viaje;
-        $viaje = Viaje::findOrFail($viajeId);
-        $viaje->updateEstado($viajeId);
-        $viaje->updatePlazasDisponibles($viajeId);
-
-        // Obtener la URL anterior a la anterior desde la sesión
+        $msg =  $this->processReserva($request, $id);
         $previousPreviousUrl = Session::get('previous_url');
-
-        // Guardar la URL anterior a la anterior en la sesión
         Session::put('previous_url', $previousPreviousUrl);
 
-
-        return view('reservas.message', ['msg' => "Reserva modificada correctamente"]);
+        return view('reservas.message', ['msg' => $msg]);
     }
 
     /**
@@ -174,10 +163,8 @@ class ReservaController extends Controller
 
         $reserva = Reserva::find($id);
         $reserva->delete();
-        $viaje = Viaje::findOrFail($reserva->id_viaje);
+        $this->updateStatusAndPlaces($reserva->id_viaje);
 
-        $viaje->updateEstado($reserva->id_viaje);
-        $viaje->updatePlazasDisponibles($reserva->id_viaje);
         return redirect()->back();
     }
 }
