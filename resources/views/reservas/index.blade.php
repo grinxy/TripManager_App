@@ -26,8 +26,9 @@
 
             @if ($reservas->isEmpty())
                 <div class="alert alert-info mt-4" role="alert">
-                    Cliente no encontrado
+                    No hay reservas para mostrar
                 </div>
+
             @else
                 <div class="py-5">
                     <table class="table table-hover">
@@ -49,7 +50,10 @@
                                 <tr>
                                     <td>{{ $reserva->id }}</td>
                                     <td>{{ $reserva->nombre_cliente }}</td>
-                                    <td>{{ $reserva->viaje->nombre }}</td>
+                                    <td>
+                                        <a href="{{ url('viajes/' . $reserva->id_viaje . '/show') }}" class="btn btn-link p-0">
+                                            {{ $reserva->viaje->nombre }}
+                                    </td>
                                     <td>{{ $reserva->fecha_reserva }}</td>
                                     <td>{{ $reserva->num_pax }}</td>
                                     <td>{{ $reserva->precio_total }} €</td>

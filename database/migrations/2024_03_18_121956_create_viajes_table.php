@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('estado', ['no confirmado','confirmado', 'completo'])->default('no confirmado');
             $table->text('imagen');
             $table->timestamps();
+            $table->integer('plazas_disponibles') -> default(12);
         });
     }
 

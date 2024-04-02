@@ -7,4 +7,5 @@
             <h2 class="py-4">Editar Reserva</h2>
 
             @include('reservas.form')
+
     @endsection

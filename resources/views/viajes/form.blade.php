@@ -11,7 +11,7 @@
 @endif
 <div class="container">
     <div class="col-12">
-        <form action="{{ isset($viaje) ? url('viajes/' . $viaje->id) : url('viajes') }}" method="post">
+        <form action="{{ isset($viaje) ? url('viajes/' . $viaje->id) : url('viajes') }}" method="post" enctype="multipart/form-data">
             @csrf
             @if(isset($viaje))
                 @method('PUT')
@@ -64,24 +64,20 @@
             <div class="mb-3 row">
                 <label for="estado" class="col-sm-2 col-form-label">Estado viaje</label>
                 <div class="col-sm-5">
-                    <select name="estado" id="estado" class="form-select" required>
-                        <option value="">Seleccionar estado</option>
-                        <<option value="no confirmado" {{ (isset($viaje) && $viaje->estado == 'no confirmado') ? 'selected' : (old('estado') == 'no confirmado' ? 'selected' : '') }}>No confirmado</option>
-                        <option value="confirmado" {{ (isset($viaje) && $viaje->estado == 'confirmado') ? 'selected' : (old('estado') == 'confirmado' ? 'selected' : '' ) }}> Confirmado</option>
-                        <option value="completo" {{ (isset($viaje) && $viaje->estado == 'completo') ? 'selected' : (old('estado') == 'completo' ? 'selected' : '' ) }}> Completo</option>
-                    </select>
+                    <p class="px-2 pt-1"> {{ isset($viaje)? $viaje->estado : 'No confirmado' }}</p>
+
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="imagen" class="col-sm-2 col-form-label">Imagen</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" name="imagen" id="imagen"
+                    <input type="file" class="form-control" name="imagen" id="imagen"
                         placeholder="URL de la imagen" value="{{isset($viaje) ? $viaje->imagen : old('imagen') }}" required>
 
                 </div>
             </div>
 
-            <a href="{{ url('viajes') }}" class="my-4 btn btn-secondary"> Volver</a>
+            <a href={{ url()->previous() }} class="my-4 btn btn-secondary"> Volver</a>
             <button type="submit" class="my-4 btn btn-success"> Guardar</button>
         </form>
     </div>

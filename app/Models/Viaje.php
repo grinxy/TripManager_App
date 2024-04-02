@@ -12,6 +12,10 @@ class Viaje extends Model
     {
         return $this->belongsTo(Reserva::class, 'id_viaje', 'id');
     }
+    public function getImagenUrlAttribute()
+    {
+        return asset('storage/' . $this->imagen);
+    }
 
     public function estadoColorClass()
 {
@@ -24,9 +28,6 @@ class Viaje extends Model
             return 'badge badge-pill bg-danger text-white';
     }
 }
-
-<<<<<<< Updated upstream
-=======
     public function updatePlazasDisponibles($id)
     {
 
@@ -57,5 +58,4 @@ class Viaje extends Model
     return $viaje->estado;
     }
 
->>>>>>> Stashed changes
 }

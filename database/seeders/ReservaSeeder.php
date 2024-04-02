@@ -1,6 +1,7 @@
 <?php
 namespace Database\Seeders;
         use App\Models\Reserva;
+        use App\Models\Viaje;
         use Illuminate\Database\Seeder;
         use Illuminate\Support\Facades\DB;
         use Carbon\Carbon;
@@ -45,7 +46,7 @@ namespace Database\Seeders;
                         'precio_total'=> '750',
                         'fecha_reserva'=> '2024-03-02',
                         'estado' => 'pagada',
-                        'id_viaje'=> 1,
+                        'id_viaje'=> 4,
                     ],
                     [
                         'nombre_cliente' => 'Simona',
@@ -53,7 +54,7 @@ namespace Database\Seeders;
                         'precio_total'=> '3000',
                         'fecha_reserva'=> '2024-03-10',
                         'estado' => 'reservada',
-                        'id_viaje'=> 6,
+                        'id_viaje'=> 5,
                     ],
                     [
                         'nombre_cliente' => 'Diego',
@@ -61,7 +62,7 @@ namespace Database\Seeders;
                         'precio_total'=> '1600',
                         'fecha_reserva'=> '2024-03-14',
                         'estado' => 'pagada',
-                        'id_viaje'=> 5,
+                        'id_viaje'=> 3,
                     ],
                 ];
                 foreach ($reservas as $reserva) {
@@ -76,9 +77,36 @@ namespace Database\Seeders;
 
                     ]);
                 }
+   // Actualizar el estado de los viajes después de insertar las reservas
+   $this->updateEstadoViajes();
+}
 
-            }
+// Método para actualizar el estado de los viajes
+private function updateEstadoViajes()
+{
+    // Obtener todos los viajes
+    $viajes = Viaje::all();
+
+    // Iterar sobre cada viaje
+    foreach ($viajes as $viaje) {
+        // Obtener el número total de pasajeros para este viaje
+        $viajeros = Reserva::where('id_viaje', $viaje->id)->sum('num_pax');
+
+        // Actualizar el estado del viaje según el número total de pasajeros
+        if ($viajeros < 8) {
+            $viaje->estado = 'No confirmado';
+        } elseif ($viajeros >= 8 && $viajeros < $viaje->num_pax) {
+            $viaje->estado = 'Confirmado';
+        } elseif ($viajeros == $viaje->num_pax) {
+            $viaje->estado = 'Completo';
         }
+
+        // Guardar el estado actualizado del viaje en la base de datos
+        $viaje->save();
+    }
+}
+}
+
 
 
 
