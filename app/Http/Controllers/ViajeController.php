@@ -6,6 +6,7 @@ use App\Models\Viaje;
 use App\Models\Reserva;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class ViajeController extends Controller
 {
@@ -33,20 +34,26 @@ class ViajeController extends Controller
         return view('viajes.create');
     }
 
+
+    public function validateData(Request $request)
+
+    {
+        $request->validate([
+        'nombre' => 'required|string',
+        'fecha_salida' => 'required',
+        'fecha_regreso' => 'required',
+        'destino' => 'required|string',
+        'precio_persona' => 'required|numeric',
+        'num_pax' => 'required',
+        'imagen' => 'required',
+    ]);
+    }
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string',
-            'fecha_salida' => 'required',
-            'fecha_regreso' => 'required',
-            'destino' => 'required|string',
-            'precio_persona' => 'required',
-            'num_pax' => 'required',
-            'imagen' => 'required',
-        ]);
+        $this->validateData($request);
 
         $viaje = new Viaje();
         $viaje->nombre = $request->input('nombre');
@@ -56,7 +63,7 @@ class ViajeController extends Controller
         $viaje->precio_persona = $request->input('precio_persona');
         $viaje->num_pax = $request->input('num_pax');
         $viaje->estado = 'no confirmado';
-        $viaje->imagen = $request->input('imagen');
+        $viaje->imagen = $request->input('imagen');;
         $viaje->plazas_disponibles = $viaje->num_pax;
 
 
@@ -74,9 +81,10 @@ class ViajeController extends Controller
         $viajeros = Reserva::where('id_viaje', $id)->sum('num_pax');
 
          // Formatear la fecha de reserva
-         $reservas->each(function ($reserva) {
+        /* $reservas->each(function ($reserva) {
             $reserva->fecha_reserva = Carbon::parse($reserva->fecha_reserva)->format('Y-m-d');
-        });
+
+        });*/
 
         return view("viajes.show", ["viaje" => $viaje, "reservas" => $reservas, "viajeros" => $viajeros]);
     }
@@ -97,15 +105,8 @@ class ViajeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nombre' => 'required|string',
-            'fecha_salida' => 'required',
-            'fecha_regreso' => 'required',
-            'destino' => 'required|string',
-            'precio_persona' => 'required',
-            'num_pax' => 'required',
-            'imagen' => 'required',
-        ]);
+        $this->validateData($request);
+
 
         $viaje = Viaje::find($id);
         $viaje->nombre = $request->input('nombre');
@@ -115,8 +116,9 @@ class ViajeController extends Controller
         $viaje->precio_persona = $request->input('precio_persona');
         $viaje->num_pax = $request->input('num_pax');
         $viaje->estado = $viaje->updateEstado($id);
-        $viaje->imagen = $request->input('imagen');
-        $viaje->plazas_disponibles = $viaje->plazasDisponibles();
+        $viaje->imagen = $request->input('imagen');;
+        $viaje->plazas_disponibles = $viaje->updatePlazasDisponibles($id);
+
 
         $viaje->save();
         return view('viajes.message', ['msg' => "Viaje modificado correctamente"]);

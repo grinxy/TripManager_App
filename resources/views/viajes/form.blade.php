@@ -11,7 +11,7 @@
 @endif
 <div class="container">
     <div class="col-12">
-        <form action="{{ isset($viaje) ? url('viajes/' . $viaje->id) : url('viajes') }}" method="post">
+        <form action="{{ isset($viaje) ? url('viajes/' . $viaje->id) : url('viajes') }}" method="post" enctype="multipart/form-data">
             @csrf
             @if(isset($viaje))
                 @method('PUT')

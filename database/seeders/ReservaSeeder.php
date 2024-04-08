@@ -22,7 +22,7 @@ namespace Database\Seeders;
                         'precio_total'=> '300',
                         'fecha_reserva'=> '2024-02-17',
                         'estado' => 'reservada',
-                        'id_viaje'=> 9,
+                        'id_viaje'=> 1,
                     ],
                     [
                         'nombre_cliente' => 'Maria Luisa',
@@ -30,7 +30,7 @@ namespace Database\Seeders;
                         'precio_total'=> '2500',
                         'fecha_reserva'=> '2024-02-29',
                         'estado' => 'reservada',
-                        'id_viaje'=> 10,
+                        'id_viaje'=> 2,
                     ],
                     [
                         'nombre_cliente' => 'Juana',
@@ -38,7 +38,7 @@ namespace Database\Seeders;
                         'precio_total'=> '3600',
                         'fecha_reserva'=> '2024-03-12',
                         'estado' => 'pagada',
-                        'id_viaje'=> 8,
+                        'id_viaje'=> 4,
                     ],
                     [
                         'nombre_cliente' => 'Pedro',
@@ -46,7 +46,7 @@ namespace Database\Seeders;
                         'precio_total'=> '750',
                         'fecha_reserva'=> '2024-03-02',
                         'estado' => 'pagada',
-                        'id_viaje'=> 8,
+                        'id_viaje'=> 4,
                     ],
                     [
                         'nombre_cliente' => 'Simona',
@@ -54,7 +54,7 @@ namespace Database\Seeders;
                         'precio_total'=> '3000',
                         'fecha_reserva'=> '2024-03-10',
                         'estado' => 'reservada',
-                        'id_viaje'=> 11,
+                        'id_viaje'=> 5,
                     ],
                     [
                         'nombre_cliente' => 'Diego',
@@ -62,7 +62,7 @@ namespace Database\Seeders;
                         'precio_total'=> '1600',
                         'fecha_reserva'=> '2024-03-14',
                         'estado' => 'pagada',
-                        'id_viaje'=> 12,
+                        'id_viaje'=> 3,
                     ],
                 ];
                 foreach ($reservas as $reserva) {

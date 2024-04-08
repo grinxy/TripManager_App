@@ -4,13 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class Viaje extends Model
 {
 
+    protected $dateFormat = 'Y-m-d';
     public function reserva()
     {
         return $this->belongsTo(Reserva::class, 'id_viaje', 'id');
+    }
+
+    public function getImagenUrlAttribute()
+    {
+        return asset('storage/' . $this->imagen);
     }
 
     public function estadoColorClass()
@@ -24,7 +30,6 @@ class Viaje extends Model
             return 'badge badge-pill bg-danger text-white';
     }
 }
-
     public function updatePlazasDisponibles($id)
     {
 
@@ -35,7 +40,7 @@ class Viaje extends Model
         $viaje->plazas_disponibles = $plazas_disponibles;
         $viaje -> save();
 
-
+    return $viaje->plazas_disponibles;
 
     }
     public function updateEstado($id)
@@ -52,5 +57,7 @@ class Viaje extends Model
     }
 
     $viaje->save();
+    return $viaje->estado;
     }
+
 }
