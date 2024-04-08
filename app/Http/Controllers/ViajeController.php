@@ -45,7 +45,7 @@ class ViajeController extends Controller
         'destino' => 'required|string',
         'precio_persona' => 'required|numeric',
         'num_pax' => 'required',
-        'imagen' => 'image|nullable|mimes: jpeg,jpg,png,svg',
+        'imagen' => 'required',
     ]);
     }
     /**
@@ -63,7 +63,7 @@ class ViajeController extends Controller
         $viaje->precio_persona = $request->input('precio_persona');
         $viaje->num_pax = $request->input('num_pax');
         $viaje->estado = 'no confirmado';
-        $viaje->imagen = $request->file('imagen')->store('public');
+        $viaje->imagen = $request->input('imagen');;
         $viaje->plazas_disponibles = $viaje->num_pax;
 
 
@@ -116,7 +116,7 @@ class ViajeController extends Controller
         $viaje->precio_persona = $request->input('precio_persona');
         $viaje->num_pax = $request->input('num_pax');
         $viaje->estado = $viaje->updateEstado($id);
-        $viaje->imagen = $request->file('imagen')->store('public');
+        $viaje->imagen = $request->input('imagen');;
         $viaje->plazas_disponibles = $viaje->updatePlazasDisponibles($id);
 
 
@@ -130,11 +130,6 @@ class ViajeController extends Controller
     public function destroy($id)
     {
         $viaje = Viaje::find($id);
-
-        //eliminar imagen del programa al eliminar el viaje
-        if ($viaje->imagen) {
-            Storage::delete('public/' . $viaje->imagen);
-        }
         $viaje->delete();
 
         return view('viajes.message', ['msg' => "Viaje eliminado correctamente"]);

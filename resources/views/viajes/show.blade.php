@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <!-- Imagen del viaje -->
-                    <img src="{{ asset('storage/' . $viaje->imagen) }}" alt="{{ $viaje->nombre }}" style="width: 100%;">
+                    <img src="{{ $viaje->imagen }}" alt="{{ $viaje->nombre }}" style="width: 100%;">
                 </div>
                 <div class="col-md-6">
                     <!-- Información del viaje -->

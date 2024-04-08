@@ -71,7 +71,7 @@
             <div class="mb-3 row">
                 <label for="imagen" class="col-sm-2 col-form-label">Imagen</label>
                 <div class="col-sm-5">
-                    <input type="file" class="form-control" name="imagen" id="imagen"
+                    <input type="text" class="form-control" name="imagen" id="imagen"
                         placeholder="URL de la imagen" value="{{isset($viaje) ? $viaje->imagen : old('imagen') }}" required>
 
                 </div>

@@ -16,6 +16,7 @@ class ViajeSeeder extends Seeder
 
         $viajes = [
             [
+                'id' => 1,
                 'nombre' => 'Colores de Barcelona',
                 'fecha_salida' => '2024-07-15',
                 'fecha_regreso' => '2024-07-20',
@@ -27,6 +28,7 @@ class ViajeSeeder extends Seeder
 
             ],
             [
+                'id' => 2,
                 'nombre' => 'Asturias gastronómica',
                 'fecha_salida' => '2024-04-15',
                 'fecha_regreso' => '2024-04-23',
@@ -37,6 +39,7 @@ class ViajeSeeder extends Seeder
                 'imagen' => 'https://www.civitatis.com/blog/wp-content/uploads/2022/10/asturias-fin-semana.jpg',
             ],
             [
+                'id' => 3,
                 'nombre' => 'Maravillas de Madrid',
                 'fecha_salida' => '2024-05-10',
                 'fecha_regreso' => '2024-05-20',
@@ -47,6 +50,7 @@ class ViajeSeeder extends Seeder
                 'imagen' => 'https://www.spain.info/.content/imagenes/cabeceras-grandes/madrid/calle-gran-via-madrid-s333961043.jpg',
             ],
             [
+                'id' => 4,
                 'nombre' => 'Descubre Sevilla',
                 'fecha_salida' => '2024-08-05',
                 'fecha_regreso' => '2024-08-10',
@@ -57,6 +61,7 @@ class ViajeSeeder extends Seeder
                 'imagen' => 'https://cdn.getyourguide.com/img/tour/b203ad7fded51715.jpeg/146.jpg',
             ],
             [
+                'id' => 5,
                 'nombre' => 'Costa del Sol',
                 'fecha_salida' => '2024-09-10',
                 'fecha_regreso' => '2024-09-20',
@@ -70,6 +75,7 @@ class ViajeSeeder extends Seeder
 
         foreach ($viajes as $viaje) {
             DB::table('viajes')->insert([
+                'id' => $viaje['id'],
                 'nombre' => $viaje['nombre'],
                 'fecha_salida' => $viaje['fecha_salida'],
                 'fecha_regreso' => $viaje['fecha_regreso'],
